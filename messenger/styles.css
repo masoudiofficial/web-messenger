@@ -1,0 +1,814 @@
+:root {
+    --xtextscolor: #239f40;
+}
+
+body {
+    margin: 0px;
+
+    scrollbar-width: none;
+    -webkit-tap-highlight-color: transparent;
+}
+body::-webkit-scrollbar {
+    display: none;
+}
+
+::selection {
+    background: lightgray;
+}
+::placeholder {
+    color: #BBBBBB;
+    font-family: serif;
+    font-size: 13px;
+    text-align: left;
+    padding-right: 1px;
+}
+
+.xhorizontalscroll {
+    overflow: auto;
+    white-space: nowrap;
+
+    scrollbar-width: none;
+}
+.xhorizontalscroll::-webkit-scrollbar {
+    display: none;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #EEEEEE;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+    background: #CCCCCC;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #239f40;
+}
+::-webkit-scrollbar-thumb:active {
+    background: #239f40;
+}
+::-webkit-scrollbar-button {
+    background: #CCCCCC;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-button:hover {
+    background: #239f40;
+}
+::-webkit-scrollbar-button:active {
+    background: #239f40;
+}
+
+.xalertmessage {
+    display: none;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    z-index: 11;
+    outline: none;
+
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-radius: 18px;
+    padding: 9px 18px;
+    box-shadow: 2px 2px 6px #AAAAAA;
+}
+
+.xblock {
+    position: relative;
+    box-sizing: border-box;
+    margin: 5px;
+    height: calc(100vh - 10px);
+
+    border: 1px solid #BBBBBB;
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+    padding: 0px 5px 5px 5px;
+    border-radius: 1px;
+    background: #FFFFFF;
+}
+
+.xpbar {
+    display: flex;
+}
+.xcbar {
+    flex: 1;
+    box-sizing: border-box;
+}
+.xcbar:nth-child(1) {
+    text-align: left;
+}
+.xcbar:nth-child(2) {
+    text-align: right;
+}
+
+.xmessenger {
+    color: var(--xtextscolor);
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    animation: xmessenger 2s ease infinite;
+}
+@keyframes xmessenger {
+    50% {
+        text-shadow: 0px 0px 2px #BBBBBB;
+    }
+}
+
+.xnumbermessages {
+    color: #BBBBBB;
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.xboxes {
+    box-sizing: border-box;
+    position: relative;
+    overflow: auto;
+    width: 100%;
+    height: calc(100vh - 33px);
+    border: 1px solid #BBBBBB;
+    border-radius: 3px;
+
+    background-image: url("./background.png");
+    background-repeat: repeat;
+    background-size: 166pt 144pt;
+
+    scrollbar-width: none;
+}
+.xboxes::-webkit-scrollbar {
+    display: none;
+}
+
+.xsettings {
+    display: none;
+    box-sizing: border-box;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    z-index: 3;
+    padding: 10px;
+    text-align: center;
+    overflow: auto;
+
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0px 1px 5px 1px #AAAAAA;
+
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.xwelcome {
+    color: var(--xtextscolor);
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    z-index: 3;
+    text-align: left;
+}
+
+.xdivision {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #BBBBBB;
+}
+
+.ximageaccount {
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--xtextscolor);
+
+    text-align: left;
+    margin: 30px 0px 5px 0px;
+}
+.ximageaccountdiv:before {
+    background: conic-gradient(#EEEEEE, #CCCCCC, #BBBBBB, #AAAAAA, #BBBBBB);
+    content: '';
+    inset: -100vw;
+    position: absolute;
+    z-index: 1;
+    animation: ximageaccountdivborder 3s infinite linear;
+}
+.ximageaccountdiv {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0px 0px 5px 2px #DDDDDD;
+    margin: auto;
+    display: block;
+}
+.ximageaccountdiv:active {
+    box-shadow: 0px 0px 0px 0px #FFFFFF;
+}
+@keyframes ximageaccountdivborder {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.xselectimage {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: block;
+    margin: 1px auto auto auto;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+.ximagetoupload {
+    display: none;
+}
+.xallowedformats {
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--xtextscolor);
+
+    margin: 5px 0px;
+}
+.xuploadimage {
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    background: #FFFFFF;
+    color: var(--xtextscolor);
+    border: none;
+    padding: 3px 7px;
+    box-shadow: 0px 1px 5px 0px #AAAAAA;
+    cursor: pointer;
+}
+.xuploadimage:disabled {
+    color: #BBBBBB;
+}
+.xuploadimage:disabled:hover {
+    cursor: not-allowed;
+}
+.xuploadimage:active {
+    box-shadow: 0px 0px 2px 0px #AAAAAA;
+}
+
+.xstoragespace{
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--xtextscolor);
+
+    text-align: left;
+    margin: 5px 0px;
+}
+.xlabels {
+    display: block;
+    margin: auto;
+    position: relative;
+    width: 230px;
+    height: 230px;
+}
+.xcirclegraph {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    background: conic-gradient(#ff0000 0deg, #4b0082 0deg, #ffff00 0deg, #008000 0deg, #0000ff 0deg, #eeeeee 0deg);
+    box-shadow: 0px 0px 3px 2px #AAAAAA;
+    opacity: 0.8;
+
+    animation: xcirclegraph 1s 1s;
+}
+@keyframes xcirclegraph {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.label {
+    width: 90px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #ffffff;
+    padding: 3px 0px;
+    border-radius: 3px;
+    font-size: 9px;
+
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+.xred {
+    color: #ff0000;
+}
+.xgreen {
+    color: #008000;
+}
+.xblue {
+    color: #0000ff;
+}
+.xgray {
+    color: #eeeeee;
+}
+
+.xaddpersonusername, .xaddpersonpassword, .xaddpersonbutton {
+    display: block;
+    margin: 15px auto;
+}
+.xdeletepersonusername, .xdeletepersonpassword, .xdeletepersonbutton {
+    display: block;
+    margin: 15px auto;
+}
+.material-symbols-rounded {
+    font-size: 1.25em;
+    padding: 5px 0px;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.xbuttons {
+    font-family: serif;
+    font-size: 13px;
+    background: #FFFFFF;
+    color: var(--xtextscolor);
+    border: none;
+    box-shadow: 0px 1px 5px 0px #AAAAAA;
+    cursor: pointer;
+}
+.xbuttons:active {
+    box-shadow: 0px 0px 2px 0px #AAAAAA;
+}
+
+.xremovepersonbutton {
+    margin-bottom: 15px;
+}
+
+.xlogout {
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #da0000;
+
+    margin: 5px 0px;
+    cursor: pointer;
+}
+
+.xmessages {
+    -webkit-user-select: none;
+    user-select: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100% - 120px);
+    overflow: auto;
+    padding: 5px;
+}
+.xemojimessages {
+    display: none;
+    -webkit-user-select: none;
+    user-select: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100% - 120px);
+    overflow: auto;
+    padding: 5px;
+    text-align: center;
+}
+.xbuttonsemojimessages {
+    box-sizing: border-box;
+    width: 90%;
+    margin: 4% auto;
+    padding: 5px;
+}
+
+.xbox {
+    box-sizing: border-box;
+    background: white;
+    width: 100%;
+    height: 120px;
+    position: absolute;
+    bottom: 0px;
+    padding: 5px;
+}
+
+.xtextarea {
+    box-sizing: border-box;
+    position: relative;
+    padding: 5px;
+}
+.xmessage {
+    box-sizing: border-box;
+    display: block;
+    outline: none;
+    width: 100%;
+    height: 60px;
+    margin: auto;
+    font-family: serif;
+    font-size: 13px;
+    color: var(--xtextscolor);
+    border: none;
+    padding: 5px;
+    box-shadow: 0px 1px 5px 1px #AAAAAA;
+    resize: none;
+}
+.xlength {
+    font-size: 10px;
+    font-weight: bold;
+    color: #BBBBBB;
+    position: absolute;
+    bottom: 6px;
+    right: 12px;
+    z-index: 2;
+}
+
+.xbar {
+    box-sizing: border-box;
+    position: relative;
+    padding: 5px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.xsettingsbtn {
+    position: relative;
+    z-index: 4;
+}
+
+.xinputs {
+    outline: none;
+    width: 144px;
+    height: 22px;
+    background: #FFFFFF;
+    font-family: serif;
+    font-size: 13px;
+    color: var(--xtextscolor);
+    border: none;
+    padding: 3px 7px;
+    box-shadow: 0px 1px 5px 0px #AAAAAA;
+}
+.xinputs:active {
+    box-shadow: 0px 0px 2px 0px #AAAAAA;
+}
+
+.xdmsgi {
+    width: 200px;
+    margin: auto;
+}
+.ximsgi {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0px 1px 5px 0px #AAAAAA;
+}
+.xamsgi {
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+.xamsga, .xamsgv {
+    display: block;
+    word-break: break-all;
+    white-space: pre-wrap;
+    margin-top: -19px;
+}
+
+.xuploadfiles {
+    display: none;
+}
+
+.xopenoptions {
+    display: none;
+    border-radius: 50%;
+}
+
+.xon {
+    background: #239f40;
+}
+.xoff {
+    background: #bbbbbb;
+}
+.xbfmt {
+    font-size: 10px;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}
+.xempty {
+    color: #BBBBBB;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 90px;
+}
+
+.xbf {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0px 1px 5px 1px #AAAAAA;
+}
+.xactionsbar {
+    display: none;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    z-index: 3;
+    padding: 10px;
+    text-align: center;
+}
+.xcloseoptions {
+    border-radius: 50%;
+    margin-right: 10px;
+    padding: 5px 6px;
+    line-height: 1;
+    font-weight: bold;
+}
+.xbackmsg, .xdelmsg, .xdelmsgs, .xblockuser {
+    margin-right: 10px;
+    padding: 3px 9px;
+}
+
+.xlogin {
+    box-sizing: border-box;
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    right: 10%;
+    bottom: 5%;
+    z-index: 3;
+    text-align: center;
+    overflow: auto;
+    padding-top: 20vh;
+
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0px 1px 5px 1px #AAAAAA;
+
+    -webkit-user-select: none;
+    user-select: none;
+}
+.xloginusername, xloginpassword, .xloginbutton {
+    display: block;
+    margin: 15px auto;
+}
+
+.tab {
+    overflow: hidden;
+}
+.tab button {
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #BBBBBB;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.xreg:hover, .xlog:hover {
+    color: #239f40;
+}
+.xreg.active, .xlog.active {
+    color: #239f40;
+}
+.xdel:hover {
+    color: #da0000;
+}
+.xdel.active {
+    color: #da0000;
+}
+.tabcontent {
+    display: none;
+    padding: 7px 9px;
+    -webkit-animation: fadeEffect 1s;
+    animation: fadeEffect 1s;
+}
+@keyframes fadeEffect {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.xemojibuttons {
+    width: 30px;
+    height: 30px;
+    margin: 0px 5px 5px 0px;
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    background: #FFFFFF;
+    color: var(--xtextscolor);
+    border: none;
+    border-radius: 3px;
+    padding: 3px 7px;
+    box-shadow: 0px 1px 2px 0px #AAAAAA;
+    cursor: pointer;
+}
+.xemojibuttons:hover {
+    transform: scale(1.1);
+}
+.xemojibuttons:active {
+    transform: scale(1);
+    box-shadow: 0px 0px 1px 0px #AAAAAA;
+}
+
+.xbfm {
+    height: 99px;
+    overflow: hidden;
+    position: relative;
+    padding: 5px;
+    box-shadow: 0px 0px 3px 0px #AAAAAA;
+
+    color: #BBBBBB;
+    font-size: 13px;
+    font-weight: bold;
+
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.xbfm:hover, .xbfm:active {
+    cursor: pointer;
+    box-shadow: 0px 0px 3px 0px #AAAAAA, 0px 0px 12px 0px #DDDDDD inset;
+}
+.xbfmimg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 5px 1px #AAAAAA;
+}
+.xbfma {
+    position: relative;
+    display: inline-block;
+}
+.xbfma:hover, .xbfma:active {
+    transform: scale(1.1);
+}
+.xbfms {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 1px 2px #EEEEEE;
+}
+.xbfmd {
+    direction: ltr;
+    text-align: left;
+    color: #BBBBBB;
+}
+.xbfmn {
+    color: #BBBBBB;
+    font-size: 10px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+.xbfmu {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    background: #ffa500;
+    border-radius: 5px;
+    font-size: 12px;
+    padding: 3px 7px;
+    line-height: 1;
+    box-shadow: 1px 1px 2px 0px #CCCCCC;
+    animation: jumpshaking2 1s infinite;
+}
+@keyframes jumpshaking2 {
+    28.56% {
+        transform: rotate(12deg);
+    }
+    42.84% {
+        transform: rotate(-12deg);
+    }
+    57.12% {
+        transform: rotate(12deg);
+    }
+    71.4% {
+        transform: rotate(-12deg);
+    }
+}
+.xellipsis {
+    color: #BBBBBB;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.xbfmm {
+    float: left;
+    margin-bottom: 7px;
+    padding: 5px;
+    box-shadow: 1px 1px 3px 0px #AAAAAA;
+    border-radius: 0px 15px 15px 15px;
+    border: 1px solid #BBBBBB;
+
+    font-size: 13px;
+    font-family: serif;
+    font-weight: bold;
+
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.xbfmr {
+    float: right;
+    margin-bottom: 7px;
+    padding: 5px;
+    box-shadow: -1px 1px 3px 0px #AAAAAA;
+    border-radius: 15px 0px 15px 15px;
+    border: 1px solid #BBBBBB;
+
+    font-size: 13px;
+    font-family: serif;
+    font-weight: bold;
+
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.xbfmm:hover, .xbfmm:active, .xbfmr:hover, .xbfmr:active {
+    cursor: pointer;
+    box-shadow: 0px 0px 3px 0px #AAAAAA, 0px 0px 12px 0px #DDDDDD inset;
+}
+.xbfmdm {
+    direction: ltr;
+    text-align: right;
+    color: #BBBBBB;
+}
+.xbfmdr {
+    direction: rtl;
+    text-align: right;
+    color: #BBBBBB;
+}
+.xbfmcm {
+    color: #ffa500;
+    white-space: pre-line;
+}
+.xbfmcr {
+    color: var(--xtextscolor);
+    white-space: pre-line;
+}
+
+.xmt1 {
+    margin-top: 7px;
+}
+.xmt2 {
+    margin-top: 0px;
+}
+.xbr {
+    border-radius: 15px;
+}
+.xfz {
+    font-size: 10px;
+}
+
+@media screen and (min-width: 768px) {
+    .xellipsis {
+        width: 90vw;
+    }
+    .xbfmm, .xbfmr {
+        width: 60vw;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 767px) {
+    .xellipsis {
+        width: 80vw;
+    }
+    .xbfmm, .xbfmr {
+        width: 60vw;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .xellipsis {
+        width: 70vw;
+    }
+    .xbfmm, .xbfmr {
+        width: calc(100vw - 80px);
+    }
+}
