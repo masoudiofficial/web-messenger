@@ -22,6 +22,6 @@ try {
     $xconnection = new PDO("mysql:host=$servername;dbname=$databasename;charset=$charset;", $username, $password);
     $xconnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("An error occurred, please try again later !");
+    die("Unfortunately, there is a problem !");
 }
 ?>
