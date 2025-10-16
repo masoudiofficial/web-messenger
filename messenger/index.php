@@ -21,17 +21,22 @@ xgeneratecsrftoken();
         <link rel="canonical" href="http://localhost/messenger/">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0"/>
         <link rel="stylesheet" type="text/css" href="./styles.css?t=<?php echo filemtime('./styles.css'); ?>">
-        <link rel="icon" type="image/png" href="./imageaccount.png?t=<?php echo filemtime('./imageaccount.png'); ?>">
+        <link rel="icon" type="image/png" href="./imageaccount.png">
     </head>
     <body>
 
         <div class="xalertmessage"></div>
         <script nonce="<?php echo $xnonce; ?>">
             function xalertmessage(xmessage, xtype) {
-                document.querySelector('.xalertmessage').innerText = xmessage;
-                document.querySelector('.xalertmessage').style.background = xtype;
-                document.querySelector('.xalertmessage').style.display = 'block';
-                setTimeout(() => document.querySelector('.xalertmessage').style.display = 'none', 5000);
+                var xelement = document.querySelector('.xalertmessage');
+                xelement.innerText = xmessage;
+                xelement.style.background = xtype;
+                xelement.style.display = 'block';
+                setTimeout(() => {
+                    xelement.innerText = '';
+                    xelement.style.background = '';
+                    xelement.style.display = 'none';
+                }, 5000);
             }
         </script>
 
@@ -52,16 +57,22 @@ xgeneratecsrftoken();
                         <div class="xwelcome"></div>
                         <div class="xdivision">
                             <div class="ximageaccount">Image account :</div>
-                            <div class="ximageaccountdiv"><img class="xselectimage" id="xselectimage" src="<?php echo './' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '/imageaccount.png?t=' . filemtime('./' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '/imageaccount.png'); ?>"></div>
-                            <input type="file" class="ximagetoupload" id="ximagetoupload" accept=".gif, .heic, .heif, .jpeg, .jpg, .png">
-                            <div class="xallowedformats">allowed formats : gif - heic - heif - jpeg - jpg - png</div>
-                            <button type="button" class="xuploadimage" id="xuploadimage" disabled>Choose file</button>
+                            <div class="ximageaccountdiv"><img class="xselectimage" id="xselectimage"></div>
+                            <input type="file" class="ximagetoupload" id="ximagetoupload" accept=".gif, .jpeg, .jpg, .png, .webp">
+                            <div class="xallowedformats">allowed formats : gif, jpeg, jpg, png, webp</div>
                         </div>
                         <div class="xdivision">
                             <div class="xstoragespace">Storage space :</div>
                             <div class="xlabels"><div class="xcirclegraph"></div></div>
                         </div>
-                        <div class="xlogout"></div>
+                        <div class="xinfo">
+                            Maximum number of conversations : 100<br>
+                            Maximum number of message characters : 1000<br>
+                            Maximum number of files sent : 10<br>
+                            Maximum size of each file : 10 MB<br>
+                            Maximum total size of files sent : 100 MB
+                        </div>
+                        <p class="xlogout"></p>
                     </div>
 
                     <div class="xverticalscroll xmessages" id="xmessages"></div>
@@ -186,57 +197,90 @@ xgeneratecsrftoken();
                             document.getElementById(xcharactersvalidation).value = xcharactersvalidationinput;
                         }
 
-                        document.getElementById("xaddpersonbutton").addEventListener("click", function () {
-                            const xhttp = new XMLHttpRequest();
-                            xhttp.onload = function () {
-                                const xobjectvalues = JSON.parse(this.responseText);
-                                document.getElementById("xaddpersonusername").value = "";
-                                document.getElementById("xaddpersonpassword").value = "";
-                                xalertmessage(xobjectvalues.xmessage, xobjectvalues.xtype);
-                            };
-                            xhttp.onerror = function () {
-                                xalertmessage("Unfortunately, there is a problem !", "#ffa500");
-                            };
-                            xhttp.open("POST", "./messages.php");
-                            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                            xhttp.send("xaddperson=xtrue&xaddpersonusername=" + encodeURIComponent(document.getElementById("xaddpersonusername").value) + "&xaddpersonpassword=" + encodeURIComponent(document.getElementById("xaddpersonpassword").value));
-                        });
-
-                        document.getElementById("xloginbutton").addEventListener("click", function () {
-                            const xhttp = new XMLHttpRequest();
-                            xhttp.onload = function () {
-                                document.getElementById('xloginusername').value = '';
-                                document.getElementById('xloginpassword').value = '';
-                                if (this.responseText === '') {
-                                    window.location.reload();
-                                } else {
-                                    const xobjectvalues = JSON.parse(this.responseText);
-                                    xalertmessage(xobjectvalues.xmessage, xobjectvalues.xtype);
+                        async function xaddpersonbutton() {
+                            const xaddpersonusername = encodeURIComponent(document.getElementById("xaddpersonusername").value);
+                            const xaddpersonpassword = encodeURIComponent(document.getElementById("xaddpersonpassword").value);
+                            const formData = 'xaddperson=xtrue&xaddpersonusername=' + xaddpersonusername + '&xaddpersonpassword=' + xaddpersonpassword;
+                            try {
+                                const response = await fetch('./messages.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: formData
+                                });
+                                if (!response.ok) {
+                                    throw new Error();
                                 }
-                            };
-                            xhttp.onerror = function () {
+                                const responseJson = await response.json();
+                                if (responseJson && Object.keys(responseJson).length > 0) {
+                                    document.getElementById("xaddpersonusername").value = "";
+                                    document.getElementById("xaddpersonpassword").value = "";
+                                    xalertmessage(responseJson.xmessage, responseJson.xtype);
+                                }
+                            } catch (error) {
                                 xalertmessage("Unfortunately, there is a problem !", "#ffa500");
-                            };
-                            xhttp.open("POST", "./messages.php");
-                            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                            xhttp.send("xloginbutton=xtrue&xloginusername=" + encodeURIComponent(document.getElementById('xloginusername').value) + "&xloginpassword=" + encodeURIComponent(document.getElementById('xloginpassword').value) + "&xtokenlogin=" + encodeURIComponent(document.getElementById('xtokenlogin').value));
-                        });
+                            }
+                        }
+                        document.getElementById("xaddpersonbutton").addEventListener("click", xaddpersonbutton);
 
-                        document.getElementById("xdeletepersonbutton").addEventListener("click", function () {
-                            const xhttp = new XMLHttpRequest();
-                            xhttp.onload = function () {
-                                const xobjectvalues = JSON.parse(this.responseText);
-                                document.getElementById("xdeletepersonusername").value = "";
-                                document.getElementById("xdeletepersonpassword").value = "";
-                                xalertmessage(xobjectvalues.xmessage, xobjectvalues.xtype);
-                            };
-                            xhttp.onerror = function () {
+                        async function xloginbutton() {
+                            const formData = new URLSearchParams();
+                            formData.append('xloginbutton', 'xtrue');
+                            formData.append('xloginusername', document.getElementById('xloginusername').value);
+                            formData.append('xloginpassword', document.getElementById('xloginpassword').value);
+                            formData.append('xtokenlogin', document.getElementById('xtokenlogin').value);
+                            try {
+                                const response = await fetch("./messages.php", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: formData.toString()
+                                });
+                                if (!response.ok) {
+                                    throw new Error();
+                                }
+                                const responseJson = await response.json();
+                                if (responseJson && Object.keys(responseJson).length > 0) {
+                                    document.getElementById('xloginusername').value = '';
+                                    document.getElementById('xloginpassword').value = '';
+                                    if (responseJson.xmessage === 'Login !') {
+                                        window.location.reload();
+                                    } else {
+                                        xalertmessage(responseJson.xmessage, responseJson.xtype);
+                                    }
+                                }
+                            } catch (error) {
                                 xalertmessage("Unfortunately, there is a problem !", "#ffa500");
-                            };
-                            xhttp.open("POST", "./messages.php");
-                            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                            xhttp.send("xdeleteperson=xtrue&xdeletepersonusername=" + encodeURIComponent(document.getElementById("xdeletepersonusername").value) + "&xdeletepersonpassword=" + encodeURIComponent(document.getElementById("xdeletepersonpassword").value));
-                        });
+                            }
+                        }
+                        document.getElementById("xloginbutton").addEventListener("click", xloginbutton);
+
+                        async function xdeletepersonbutton() {
+                            const formData = new FormData();
+                            formData.append('xdeleteperson', 'xtrue');
+                            formData.append('xdeletepersonusername', document.getElementById("xdeletepersonusername").value);
+                            formData.append('xdeletepersonpassword', document.getElementById("xdeletepersonpassword").value);
+                            try {
+                                const response = await fetch("./messages.php", {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                                if (!response.ok) {
+                                    throw new Error();
+                                }
+                                const responseJson = await response.json();
+                                if (responseJson && Object.keys(responseJson).length > 0) {
+                                    document.getElementById("xdeletepersonusername").value = "";
+                                    document.getElementById("xdeletepersonpassword").value = "";
+                                    xalertmessage(responseJson.xmessage, responseJson.xtype);
+                                }
+                            } catch (error) {
+                                xalertmessage("Unfortunately, there is a problem !", "#ffa500");
+                            }
+                        }
+                        document.getElementById("xdeletepersonbutton").addEventListener("click", xdeletepersonbutton);
                     </script>
 
                     <?php
