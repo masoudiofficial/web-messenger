@@ -2,13 +2,17 @@
     --xtextscolor: #239f40;
 }
 
-body {
-    margin: 0px;
-
+html {
     scrollbar-width: none;
     -webkit-tap-highlight-color: transparent;
+
+    -webkit-user-select: none;
+    user-select: none;
 }
-body::-webkit-scrollbar {
+body {
+    margin: 0px;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar {
     display: none;
 }
 
@@ -68,15 +72,15 @@ body::-webkit-scrollbar {
     top: 30%;
     left: 50%;
     transform: translate(-50%, -30%);
-    z-index: 11;
+    z-index: 20;
     outline: none;
-
+    text-indent: 1px;
     font-size: 14px;
     font-weight: bold;
     color: #FFFFFF;
     border-radius: 18px;
     padding: 9px 18px;
-    box-shadow: 2px 2px 6px #AAAAAA;
+    box-shadow: 1px 1px 5px #aaaaaa;
 }
 
 .xblock {
@@ -162,9 +166,6 @@ body::-webkit-scrollbar {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     box-shadow: 0px 1px 5px 1px #AAAAAA;
-
-    -webkit-user-select: none;
-    user-select: none;
 }
 
 .xwelcome {
@@ -356,19 +357,22 @@ body::-webkit-scrollbar {
     margin-bottom: 15px;
 }
 
+.xinfo {
+    font-family: serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #AAAAAA;
+    text-align: left;
+}
 .xlogout {
     font-family: serif;
     font-size: 13px;
     font-weight: bold;
     color: #da0000;
-
-    margin: 5px 0px;
     cursor: pointer;
 }
 
 .xmessages {
-    -webkit-user-select: none;
-    user-select: none;
     box-sizing: border-box;
     width: 100%;
     height: calc(100% - 120px);
@@ -377,8 +381,6 @@ body::-webkit-scrollbar {
 }
 .xemojimessages {
     display: none;
-    -webkit-user-select: none;
-    user-select: none;
     box-sizing: border-box;
     width: 100%;
     height: calc(100% - 120px);
@@ -507,7 +509,14 @@ body::-webkit-scrollbar {
     left: 5px;
 }
 .xempty {
-    color: #BBBBBB;
+    color: #AAAAAA;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 90px;
+}
+.xproblem {
+    color: #da0000;
     font-size: 13px;
     font-weight: bold;
     text-align: center;
@@ -558,9 +567,6 @@ body::-webkit-scrollbar {
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     box-shadow: 0px 1px 5px 1px #AAAAAA;
-
-    -webkit-user-select: none;
-    user-select: none;
 }
 .xloginusername, xloginpassword, .xloginbutton {
     display: block;
