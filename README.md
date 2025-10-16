@@ -1,21 +1,25 @@
-# web-messenger  
-This web messenger project is developed with JS and PHP languages. It is lightweight and very easy to setup and run ( without any libraries or frameworks ).  
+# web messenger  
+This is a lightweight web-based messenger built using JavaScript and PHP, designed to run without any external libraries or frameworks. It’s easy to set up, fast to deploy, and ideal for developers who want a simple yet secure messaging platform.  
 
-Features :  
+Key Features :  
 
-- Register / Login / Delete  
-- Sending messages, emoji and contents ( audios / images / videos )  
-- Sending text and content ( 10 files ) together  
-- Cross-Origin Resource Sharing (CORS) headers  
-- Encryption ( unique for each user ) messages  
-- Content Security Policy (CSP) header  
-- Cross-Site Request Forgery (CSRF) Token  
-- Rate Limiting technique  
-- Block users  
-- Display user status ( online / offline )  
-- Check ( tick ) read message   
-- Display storage space ( circle graph ) for each content type  
-- Only with a 6-column table  
+1 - User Management :  
+Register, login, and delete accounts  
+2 - User Interaction :  
+Send text, emojis, and up to 10 media files (audio, images, videos) in a single message  
+Block/unblock users  
+Online/offline status (active status)  
+Read receipts (checkmarks)  
+3 - Security :  
+Unique encryption per user  
+Content Security Policy (CSP) headers  
+Cross-Origin Resource Sharing (CORS) headers  
+CSRF protection via tokens  
+Rate limiting to prevent abuse  
+4 - Storage Visualization :  
+Circular graph showing usage per content type  
+5 - Data Structure :  
+Efficiently managed using a simple 6-column database table  
 ...  
 
 @masoudiofficial
