@@ -183,7 +183,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     border-bottom: 1px dashed #BBBBBB;
 }
 
-.ximageaccount {
+.xaccountimage {
     font-family: serif;
     font-size: 13px;
     font-weight: bold;
@@ -192,15 +192,15 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     text-align: left;
     margin: 30px 0px 5px 0px;
 }
-.ximageaccountdiv:before {
+.xaccountimagediv:before {
     background: conic-gradient(#EEEEEE, #CCCCCC, #BBBBBB, #AAAAAA, #BBBBBB);
     content: '';
     inset: -100vw;
     position: absolute;
     z-index: 1;
-    animation: ximageaccountdivborder 3s infinite linear;
+    animation: xaccountimagedivborder 3s infinite linear;
 }
-.ximageaccountdiv {
+.xaccountimagediv {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -210,10 +210,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     margin: auto;
     display: block;
 }
-.ximageaccountdiv:active {
+.xaccountimagediv:active {
     box-shadow: 0px 0px 0px 0px #FFFFFF;
 }
-@keyframes ximageaccountdivborder {
+@keyframes xaccountimagedivborder {
     100% {
         transform: rotate(360deg);
     }
