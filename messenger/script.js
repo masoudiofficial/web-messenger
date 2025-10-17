@@ -56,9 +56,10 @@ document.querySelectorAll('.xverticalscroll').forEach((xvscrollable) => {
 });
 
 async function ximagetoupload(xselectfile) {
-    const xfile = xselectfile.files[0], xfiletype = xfile.type, xfilename = xfile.name;
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (allowedTypes.includes(xfiletype)) {
+    const xfile = xselectfile.files[0], xfiletype = xfile.type, xfilename = xfile.name.toLowerCase();
+    const allowedTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/webp'];
+    const allowedExtensions = ['gif', 'jpeg', 'jpg', 'png', 'webp'];
+    if (allowedTypes.includes(xfiletype) && allowedExtensions.includes(xfilename.split('.').pop())) {
         const xunits = ['B', 'KB', 'MB', 'GB'];
         let xbytes = xfile.size, j = 0;
         while (xbytes >= 1024 && j < xunits.length - 1) {
@@ -70,7 +71,7 @@ async function ximagetoupload(xselectfile) {
         formData.append('xuploadimage', 'xtrue');
         formData.append('ximagetoupload', xfile);
         try {
-            const response = await fetch("./messages.php", {
+            const response = await fetch("./script.php", {
                 method: 'POST',
                 body: formData
             });
@@ -101,7 +102,7 @@ async function xcirclegraph() {
     const formData = new FormData();
     formData.append('xcirclegraph', 'xtrue');
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: formData
         });
@@ -110,7 +111,7 @@ async function xcirclegraph() {
         }
         const responseJson = await response.json();
         if (responseJson && Object.keys(responseJson).length > 0) {
-            document.getElementById('xselectimage').src = responseJson.ximageaccount;
+            document.getElementById('xselectimage').src = responseJson.xaccountimage;
             document.querySelectorAll('.xlabels .label').forEach(el => el.remove());
             var xaudioangle = responseJson.xaudioangle;
             var ximageangle = responseJson.ximageangle;
@@ -195,19 +196,29 @@ document.getElementById("xmessage").onkeyup = function () {
 async function xsubmitmessage() {
     const xreceiver = document.getElementById('xreceiver').value;
     const xmessage = document.getElementById('xmessage').value;
-    const files = document.getElementById('xuploadfiles').files;
+    const xfiles = document.getElementById('xuploadfiles').files;
     const formData = new FormData();
     formData.append('xsubmitmessages', 'xtrue');
     formData.append('xreceiversubmitmessage', xreceiver);
     formData.append('xmessagesubmitmessage', xmessage);
-    for (let i = 0; i < files.length; i++) {
-        formData.append('xuploadfiles[]', files[i]);
+    const allowedTypes = ['audio/mpeg', 'audio/ogg', 'audio/wav', 'audio/webm', 'image/gif', 'image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/ogg', 'video/webm'];
+    const allowedExtensions = ['gif', 'jpeg', 'jpg', 'mp3', 'mp4', 'ogg', 'ogv', 'png', 'wav', 'webm', 'webp'];
+    for (let i = 0; i < xfiles.length; i++) {
+        const xfile = xfiles[i];
+        if (allowedTypes.includes(xfile.type) && allowedExtensions.includes(xfile.name.toLowerCase().split('.').pop())) {
+            formData.append('xuploadfiles[]', xfile);
+        } else {
+            xalertmessage('The file "' + xfile.name + '" has an invalid format !', "#ffa500");
+            document.getElementById('xuploadfilesbutton').style.color = '#239f40';
+            document.getElementById('xuploadfiles').value = '';
+            return;
+        }
     }
     if (xreceiver !== '') {
-        if (xmessage !== '' || files.length !== 0) {
+        if (xmessage !== '' || xfiles.length !== 0) {
             if (document.getElementById('xmessage').value.length <= 1000) {
                 try {
-                    const response = await fetch("./messages.php", {
+                    const response = await fetch("./script.php", {
                         method: 'POST',
                         body: formData
                     });
@@ -272,7 +283,7 @@ async function xreceivemessages() {
     const formData = new FormData();
     formData.append('xreceivemessages', 'xtrue');
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: formData
         });
@@ -350,7 +361,7 @@ async function xreceivemessage() {
     formData.append('xreceivemessage', 'xtrue');
     formData.append('xuserreceivemessage', document.getElementById('xreceiver').value);
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: formData
         });
@@ -435,7 +446,7 @@ async function xdelmsg() {
     formData.append('xdelmsg', 'xtrue');
     formData.append('xdelmsgdate', document.getElementById('xdelmsgdate').value);
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: formData
         });
@@ -457,7 +468,7 @@ async function xdelmsgs() {
     formData.append('xdelmsgs', 'xtrue');
     formData.append('xdelmsgsusername', document.getElementById('xreceiver').value);
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: formData
         });
@@ -479,7 +490,7 @@ async function xblockuser() {
     formData.append('xblockuser', 'xtrue');
     formData.append('xblockuserusername', document.getElementById('xreceiver').value);
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: formData
         });
@@ -500,7 +511,7 @@ async function xlogout() {
     const form = new FormData();
     form.append('xlogout', 'xtrue');
     try {
-        const response = await fetch("./messages.php", {
+        const response = await fetch("./script.php", {
             method: 'POST',
             body: form
         });
