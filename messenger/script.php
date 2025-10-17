@@ -8,7 +8,7 @@ function xdatetime() {
     return $xdatetime;
 }
 
-if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/^[a-z]+$/", $_POST["xaddperson"]) && $_POST["xaddperson"] === "xtrue") {
+if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/^[a-z]+$/", $_POST["xaddperson"]) && $_POST["xaddperson"] === "xtrue" && empty($_FILES)) {
     #if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' && strtolower($_SERVER['HTTP_HOST']) === 'example.com' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER["REQUEST_METHOD"] === "POST") {#When you connect locally with your phone : (strtolower($_SERVER['HTTP_HOST']) === 'localhost' || strtolower($_SERVER['HTTP_HOST']) === '192.168.x.x')
         if (isset($_POST["xaddpersonusername"]) && !empty($_POST["xaddpersonusername"]) && preg_match("/^[a-z0-9]+$/", $_POST["xaddpersonusername"]) && strlen($_POST["xaddpersonusername"]) <= 32) {
@@ -17,16 +17,16 @@ if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/
 
                 $xselect1 = $xconnection->prepare("SELECT username FROM userstable WHERE username=?");
                 $xselect1->execute([$_POST["xaddpersonusername"]]);
-                $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                if (empty($xselect1)) {
+                if (empty($xselect1_r)) {
 
                     $xinsert1 = $xconnection->prepare("INSERT INTO userstable (username, password, creationdate, messages, status, blocks) VALUES (?, ?, ?, ?, ?, ?)");
-                    $xinsert1->execute([$_POST["xaddpersonusername"], password_hash($_POST["xaddpersonpassword"], PASSWORD_DEFAULT), xdatetime(), "", "1000-01-01 00:00:00", ""]);
+                    $xinsert1->execute([$_POST["xaddpersonusername"], password_hash($_POST["xaddpersonpassword"], PASSWORD_DEFAULT), xdatetime(), "", xdatetime(), ""]);
 
                     $xfolder = $_POST["xaddpersonusername"];
                     $xsubfolders = ['images', 'audios', 'videos'];
-                    if (!is_dir("./$xfolder") && mkdir("./$xfolder", 0755, true) && copy("./imageaccount.png", "./$xfolder/imageaccount.png")) {
+                    if (!is_dir("./$xfolder") && mkdir("./$xfolder", 0755, true) && copy("./accountimage.png", "./$xfolder/accountimage.png")) {
                         foreach ($xsubfolders as $xsf) {
                             mkdir("./$xfolder" . DIRECTORY_SEPARATOR . $xsf, 0755, true);
                         }
@@ -37,7 +37,7 @@ if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/
                 } else {
                     echo json_encode(array("xmessage" => "This username is already taken !", "xtype" => "#ffa500"));
                 }
-            } catch (PDOException $e) {
+            } catch (Throwable $e) {
                 echo json_encode(array("xmessage" => "Unfortunately, there is a problem !", "xtype" => "#ffa500"));
             } finally {
                 $xconnection = null;
@@ -50,7 +50,7 @@ if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/
     }
 }
 
-if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_match('/^[a-z]+$/', $_POST['xloginbutton']) && $_POST['xloginbutton'] === 'xtrue') {
+if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_match('/^[a-z]+$/', $_POST['xloginbutton']) && $_POST['xloginbutton'] === "xtrue" && empty($_FILES)) {
     if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['xloginusername']) && !empty($_POST['xloginusername']) && preg_match('/^[a-z0-9]+$/', $_POST['xloginusername']) && strlen($_POST["xloginusername"]) <= 32) {
 
@@ -67,9 +67,9 @@ if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_matc
 
                     $xselect1 = $xconnection->prepare("SELECT password FROM userstable WHERE username=?");
                     $xselect1->execute([$_POST["xloginusername"]]);
-                    $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                    $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                    if (!empty($xselect1) && password_verify($_POST['xloginpassword'], $xselect1['password'])) {
+                    if (!empty($xselect1_r) && password_verify($_POST['xloginpassword'], $xselect1_r['password'])) {
 
                         session_regenerate_id(true);
                         $xsecuritytoken = str_shuffle('g1o9vVT)D$2Pkzba4hG7u&rLF5HMfe@Ni^sU%WBQI(dYt6nA#X8c0ERmKCwx*SlOpqjZJ!3y');
@@ -80,7 +80,7 @@ if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_matc
                     } else {
                         echo json_encode(array("xmessage" => "Username or password is invalid !", "xtype" => "#ffa500"));
                     }
-                } catch (PDOException $e) {
+                } catch (Throwable $e) {
                     echo json_encode(array("xmessage" => "Unfortunately, there is a problem !", "xtype" => "#ffa500"));
                 } finally {
                     $xconnection = null;
@@ -94,7 +94,7 @@ if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_matc
     }
 }
 
-if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_match("/^[a-z]+$/", $_POST["xdeleteperson"]) && $_POST["xdeleteperson"] === "xtrue") {
+if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_match("/^[a-z]+$/", $_POST["xdeleteperson"]) && $_POST["xdeleteperson"] === "xtrue" && empty($_FILES)) {
     if (strtolower($_SERVER["HTTP_HOST"]) === "localhost" && $_SERVER["REQUEST_METHOD"] === "POST") {
         if (isset($_POST["xdeletepersonusername"]) && !empty($_POST["xdeletepersonusername"]) && preg_match("/^[a-z0-9]+$/", $_POST["xdeletepersonusername"]) && strlen($_POST["xdeletepersonusername"]) <= 32) {
 
@@ -102,9 +102,9 @@ if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_ma
 
                 $xselect1 = $xconnection->prepare("SELECT password FROM userstable WHERE username=?");
                 $xselect1->execute([$_POST["xdeletepersonusername"]]);
-                $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                if (!empty($xselect1) && password_verify($_POST['xdeletepersonpassword'], $xselect1['password'])) {
+                if (!empty($xselect1_r) && password_verify($_POST['xdeletepersonpassword'], $xselect1_r['password'])) {
 
                     $xdelete1 = $xconnection->prepare("DELETE FROM userstable WHERE username=?");
                     $xdelete1->execute([$_POST["xdeletepersonusername"]]);
@@ -133,7 +133,7 @@ if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_ma
                 } else {
                     echo json_encode(array("xmessage" => "Username or password is invalid !", "xtype" => "#ffa500"));
                 }
-            } catch (PDOException $e) {
+            } catch (Throwable $e) {
                 echo json_encode(array("xmessage" => "Unfortunately, there is a problem !", "xtype" => "#ffa500"));
             } finally {
                 $xconnection = null;
@@ -148,8 +148,8 @@ if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_ma
 
 if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialchars(strip_tags($_SESSION['user-info'][0]), ENT_QUOTES, 'UTF-8') === $_SERVER['REMOTE_ADDR']) && (htmlspecialchars(strip_tags($_SESSION['user-info'][1]), ENT_QUOTES, 'UTF-8') === $_SERVER['HTTP_USER_AGENT']) && (time() - htmlspecialchars(strip_tags($_SESSION['user-info'][2]), ENT_QUOTES, 'UTF-8') <= 86400) && (htmlspecialchars(strip_tags($_SESSION['user-username'][3]), ENT_QUOTES, 'UTF-8') === htmlspecialchars(strip_tags($_SESSION['user-info'][3]), ENT_QUOTES, 'UTF-8'))) {
 
-    function ximageaccount($dir) {
-        $filename = 'imageaccount';
+    function xaccountimage($dir) {
+        $filename = 'accountimage';
         $extensions = ['gif', 'jpeg', 'jpg', 'png', 'webp'];
         foreach ($extensions as $ext) {
             $fullPath = "$dir/$filename.$ext";
@@ -161,13 +161,15 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
     if (isset($_POST['xuploadimage']) && !empty($_POST["xuploadimage"]) && preg_match("/^[a-z]+$/", $_POST["xuploadimage"]) && $_POST["xuploadimage"] === "xtrue") {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_FILES['ximagetoupload']) && isset($_FILES['ximagetoupload']['tmp_name']) && is_uploaded_file($_FILES['ximagetoupload']['tmp_name'])) {
+            if (isset($_FILES['ximagetoupload']) && isset($_FILES['ximagetoupload']['tmp_name']) && is_uploaded_file($_FILES['ximagetoupload']['tmp_name']) && $_FILES['ximagetoupload']['size'] < 10485760) {
 
+                $ximgmime = mime_content_type($_FILES['ximagetoupload']['tmp_name']);
                 $ximgext = strtolower(pathinfo($_FILES['ximagetoupload']['name'], PATHINFO_EXTENSION));
-                if ($ximgext === 'gif' or $ximgext === 'jpeg' or $ximgext === 'jpg' or $ximgext === 'png' or $ximgext === 'webp') {
 
-                    $xoldimg = ximageaccount('./' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8'));
-                    $xnewimg = './' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . "/imageaccount.$ximgext";
+                if (in_array($ximgmime, ['image/gif', 'image/jpeg', 'image/png', 'image/webp']) && in_array($ximgext, ['gif', 'jpeg', 'jpg', 'png', 'webp'])) {
+
+                    $xoldimg = xaccountimage('./' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8'));
+                    $xnewimg = './' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . "/accountimage.$ximgext";
                     if (unlink($xoldimg) && move_uploaded_file($_FILES['ximagetoupload']['tmp_name'], $xnewimg)) {
                         echo json_encode(array("xmessage" => "$xnewimg?t=" . filemtime($xnewimg), "xtype" => "#239f40"));
                     } else {
@@ -203,7 +205,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         return $totalSize;
     }
 
-    if (isset($_POST['xcirclegraph']) && !empty($_POST['xcirclegraph']) && preg_match('/^[a-z]+$/', $_POST['xcirclegraph']) && $_POST['xcirclegraph'] === 'xtrue') {
+    if (isset($_POST['xcirclegraph']) && !empty($_POST['xcirclegraph']) && preg_match('/^[a-z]+$/', $_POST['xcirclegraph']) && $_POST['xcirclegraph'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $xtotalspace = 104857600;
@@ -218,9 +220,9 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
             $xvideoangle = 360 * ($xvideosize / $xtotalspace);
             $xfreeangle = 360 * ($xfreespace / $xtotalspace);
 
-            $ximageaccount = ximageaccount('./' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8'));
+            $xaccountimage = xaccountimage('./' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8'));
 
-            echo json_encode(array("xaudioangle" => $xaudioangle, "xaudiosize" => formatBytes($xaudiosize), "ximageangle" => $ximageangle, "ximagesize" => formatBytes($ximagesize), "xvideoangle" => $xvideoangle, "xvideosize" => formatBytes($xvideosize), "xfreeangle" => $xfreeangle, "xfreespace" => formatBytes($xfreespace), "ximageaccount" => "$ximageaccount?t=" . filemtime($ximageaccount)));
+            echo json_encode(array("xaudioangle" => $xaudioangle, "xaudiosize" => formatBytes($xaudiosize), "ximageangle" => $ximageangle, "ximagesize" => formatBytes($ximagesize), "xvideoangle" => $xvideoangle, "xvideosize" => formatBytes($xvideosize), "xfreeangle" => $xfreeangle, "xfreespace" => formatBytes($xfreespace), "xaccountimage" => "$xaccountimage?t=" . filemtime($xaccountimage)));
         }
     }
 
@@ -270,7 +272,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xsubmitmessages']) && !empty($_POST['xsubmitmessages']) && preg_match('/^[a-z]+$/', $_POST['xsubmitmessages']) && $_POST['xsubmitmessages'] === 'xtrue') {
+    if (isset($_POST['xsubmitmessages']) && !empty($_POST['xsubmitmessages']) && preg_match('/^[a-z]+$/', $_POST['xsubmitmessages']) && $_POST['xsubmitmessages'] === "xtrue") {
 
         if (time() - htmlspecialchars(strip_tags($_SESSION['user-username'][2]), ENT_QUOTES, 'UTF-8') <= '4') {
             $_SESSION['user-username'][1]++;
@@ -291,13 +293,13 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                                 $xselect1 = $xconnection->prepare("SELECT blocks FROM userstable WHERE username=?");
                                 $xselect1->execute([htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                                $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                                $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
                                 $xblock = str_replace('RM', '', $_POST['xmessagesubmitmessage']);
-                                if (!empty($xselect1) && strpos($xselect1['blocks'], $xblock) !== false) {
+                                if (!empty($xselect1_r) && strpos($xselect1_r['blocks'], $xblock) !== false) {
 
                                     $xupdate1 = $xconnection->prepare("UPDATE userstable SET blocks=? WHERE username=?");
-                                    $xupdate1->execute([str_replace('(b)' . $xblock . '(bb)', '', $xselect1['blocks']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                    $xupdate1->execute([str_replace('(b)' . $xblock . '(bb)', '', $xselect1_r['blocks']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                 }
                             } else {
 
@@ -318,11 +320,14 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                                 if (isset($_FILES['xuploadfiles']) && isset($_FILES['xuploadfiles']['tmp_name']) && is_array($_FILES['xuploadfiles']['tmp_name']) && count(array_filter($_FILES['xuploadfiles']['tmp_name'], 'is_uploaded_file')) === count($_FILES['xuploadfiles']['tmp_name'])) {
                                     if (array_sum(array_filter($_FILES['xuploadfiles']['size'])) < 104857600) {
-                                        if (count(array_filter($_FILES['xuploadfiles']['name'])) <= 10) {
+                                        if (count(array_filter($_FILES['xuploadfiles']['tmp_name'], 'is_uploaded_file')) <= 10) {
 
-                                            foreach ($_FILES['xuploadfiles']['name'] as $xkeys => $xvalues) {
+                                            foreach ($_FILES['xuploadfiles']['tmp_name'] as $xkeys => $xtmpname) {
+                                                $xfilemime = mime_content_type($xtmpname);
+                                                $allowedMimes = ['audio/mpeg', 'audio/ogg', 'audio/wav', 'audio/webm', 'image/gif', 'image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/ogg', 'video/webm'];
                                                 $xfileext = strtolower(pathinfo($_FILES['xuploadfiles']['name'][$xkeys], PATHINFO_EXTENSION));
-                                                if ($xfileext === 'gif' or $xfileext === 'jpeg' or $xfileext === 'jpg' or $xfileext === 'mp3' or $xfileext === 'mp4' or $xfileext === 'ogg' or $xfileext === 'ogv' or $xfileext === 'png' or $xfileext === 'wav' or $xfileext === 'webm' or $xfileext === 'webp') {
+                                                $allowedExts = ['gif', 'jpeg', 'jpg', 'mp3', 'mp4', 'ogg', 'ogv', 'png', 'wav', 'webm', 'webp'];
+                                                if (in_array($xfilemime, $allowedMimes) && in_array($xfileext, $allowedExts)) {
                                                     if ($_FILES['xuploadfiles']['size'][$xkeys] > 10485760) {
                                                         echo json_encode(array("xmessage" => "Your file size is more than 10 MB !", "xtype" => "#ffa500"));
                                                         $xalert++;
@@ -346,11 +351,12 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                             }
 
                                             if ($xalert === 0) {
-                                                foreach ($_FILES['xuploadfiles']['name'] as $xkeys => $xvalues) {
+                                                foreach ($_FILES['xuploadfiles']['tmp_name'] as $xkeys => $xtmpname) {
+                                                    $xfilemime = mime_content_type($xtmpname);
                                                     $xfileext = strtolower(pathinfo($_FILES['xuploadfiles']['name'][$xkeys], PATHINFO_EXTENSION));
                                                     $xfilename = str_replace('.', '', $xmepath) . '-' . substr(str_shuffle('kF4dXHVenfSaq5KAyZcuBmUY1PT78pGtLl0sirhCJEMNjwQWDx9zOIR2o3bv6g'), 0, 32) . '.' . $xfileext;
-                                                    if ($xfileext === 'gif' or $xfileext === 'jpeg' or $xfileext === 'jpg' or $xfileext === 'png' or $xfileext === 'webp') {
-                                                        if (move_uploaded_file($_FILES['xuploadfiles']['tmp_name'][$xkeys], $xmepath . '/images' . $xfilename)) {
+                                                    if (in_array($xfilemime, ['image/gif', 'image/jpeg', 'image/png', 'image/webp']) && in_array($xfileext, ['gif', 'jpeg', 'jpg', 'png', 'webp'])) {
+                                                        if (move_uploaded_file($xtmpname, $xmepath . '/images' . $xfilename)) {
                                                             if ($xmepath !== $xreceiverpath) {
                                                                 $xmefilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . $xmepath . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . $xmepath . '/images' . $xfilename . '" target="_blank">' . $xmepath . '/images' . $xfilename . '</a></div>';
                                                                 if (copy($xmepath . '/images' . $xfilename, $xreceiverpath . '/images' . $xfilename))
@@ -359,8 +365,8 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                                 $xreceiverfilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . $xreceiverpath . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . $xreceiverpath . '/images' . $xfilename . '" target="_blank">' . $xreceiverpath . '/images' . $xfilename . '</a></div>';
                                                             }
                                                         }
-                                                    } else if ($xfileext === 'mp3' or $xfileext === 'ogg' or $xfileext === 'wav' or $xfileext === 'webm') {
-                                                        if (move_uploaded_file($_FILES['xuploadfiles']['tmp_name'][$xkeys], $xmepath . '/audios' . $xfilename)) {
+                                                    } else if (in_array($xfilemime, ['audio/mpeg', 'audio/ogg', 'audio/wav', 'audio/webm']) && in_array($xfileext, ['mp3', 'ogg', 'wav', 'webm'])) {
+                                                        if (move_uploaded_file($xtmpname, $xmepath . '/audios' . $xfilename)) {
                                                             if ($xmepath !== $xreceiverpath) {
                                                                 $xmefilespath .= '<br><a class="xamsga" href="' . $xmepath . '/audios' . $xfilename . '" target="_blank">' . $xmepath . '/audios' . $xfilename . '</a>';
                                                                 if (copy($xmepath . '/audios' . $xfilename, $xreceiverpath . '/audios' . $xfilename))
@@ -369,8 +375,8 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                                 $xreceiverfilespath .= '<br><a class="xamsga" href="' . $xreceiverpath . '/audios' . $xfilename . '" target="_blank">' . $xreceiverpath . '/audios' . $xfilename . '</a>';
                                                             }
                                                         }
-                                                    } else if ($xfileext === 'mp4' or $xfileext === 'ogv' or $xfileext === 'webm') {
-                                                        if (move_uploaded_file($_FILES['xuploadfiles']['tmp_name'][$xkeys], $xmepath . '/videos' . $xfilename)) {
+                                                    } else if (in_array($xfilemime, ['video/mp4', 'video/ogg', 'video/webm']) && in_array($xfileext, ['mp4', 'ogv', 'webm'])) {
+                                                        if (move_uploaded_file($xtmpname, $xmepath . '/videos' . $xfilename)) {
                                                             if ($xmepath !== $xreceiverpath) {
                                                                 $xmefilespath .= '<br><a class="xamsgv" href="' . $xmepath . '/videos' . $xfilename . '" target="_blank">' . $xmepath . '/videos' . $xfilename . '</a>';
                                                                 if (copy($xmepath . '/videos' . $xfilename, $xreceiverpath . '/videos' . $xfilename))
@@ -396,20 +402,20 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                                     $xselect2 = $xconnection->prepare("SELECT creationdate, messages, blocks FROM userstable WHERE username=?");
                                     $xselect2->execute([htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                                    $xselect2 = $xselect2->fetch(PDO::FETCH_ASSOC);
+                                    $xselect2_r = $xselect2->fetch(PDO::FETCH_ASSOC);
 
-                                    if (!empty($xselect2)) {#😂
-                                        $xmemessages = xdecryptmessages($xmessages = $xselect2['messages'], $creationdate = $xselect2['creationdate']);
+                                    if (!empty($xselect2_r)) {#😂
+                                        $xmemessages = xdecryptmessages($xmessages = $xselect2_r['messages'], $creationdate = $xselect2_r['creationdate']);
 
                                         if ($xmemessages !== false) {
 
                                             $xselect3 = $xconnection->prepare("SELECT creationdate, messages, blocks FROM userstable WHERE username=?");
                                             $xselect3->execute([$_POST['xreceiversubmitmessage']]);
-                                            $xselect3 = $xselect3->fetch(PDO::FETCH_ASSOC);
+                                            $xselect3_r = $xselect3->fetch(PDO::FETCH_ASSOC);
 
-                                            if (!empty($xselect3)) {
+                                            if (!empty($xselect3_r)) {
 
-                                                $xreceivermessages = xdecryptmessages($xmessages = $xselect3['messages'], $creationdate = $xselect3['creationdate']);
+                                                $xreceivermessages = xdecryptmessages($xmessages = $xselect3_r['messages'], $creationdate = $xselect3_r['creationdate']);
                                             } else {
                                                 $xreceivermessages = xdecryptmessages($xmessages = '', $creationdate = xdatetime());
                                             }
@@ -419,36 +425,36 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                 if (count(array_values(array_filter(explode('(p)', $xmemessages)))) <= 100) {
 
                                                     if ($_POST['xreceiversubmitmessage'] !== htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')) {
-                                                        if (!empty($xselect3)) {
+                                                        if (!empty($xselect3_r)) {
 
-                                                            if (strpos($xselect3['blocks'], '(b)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(bb)') === false) {
-                                                                if (strpos($xselect2['blocks'], '(b)' . $_POST['xreceiversubmitmessage'] . '(bb)') === false) {
+                                                            if (strpos($xselect3_r['blocks'], '(b)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(bb)') === false) {
+                                                                if (strpos($xselect2_r['blocks'], '(b)' . $_POST['xreceiversubmitmessage'] . '(bb)') === false) {
 
                                                                     if ($xmemessages !== '') {
                                                                         if (strpos($xmemessages, '(u)' . $_POST['xreceiversubmitmessage'] . '(uu)') === false) {
                                                                             $xupdate2 = $xconnection->prepare("UPDATE userstable SET messages=CONCAT(messages, ?) WHERE username=?");
-                                                                            $xupdate2->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xmefilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                            $xupdate2->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xmefilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                         } else {
                                                                             $xupdate3 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                            $xupdate3->execute([xencryptmessages($xmessages = str_replace('(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', '(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xmefilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                            $xupdate3->execute([xencryptmessages($xmessages = str_replace('(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', '(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xmefilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                         }
                                                                     } else {
                                                                         $xupdate4 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                        $xupdate4->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xmefilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                        $xupdate4->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xmefilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . $_POST['xreceiversubmitmessage'] . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                     }
                                                                 } else {
 
                                                                     if ($xmemessages !== '') {
                                                                         if (strpos($xmemessages, '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)') === false) {
                                                                             $xupdate5 = $xconnection->prepare("UPDATE userstable SET messages=CONCAT(messages, ?) WHERE username=?");
-                                                                            $xupdate5->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)You have blocked ' . $_POST['xreceiversubmitmessage'] . ' ! To unblock, send the word RM' . $_POST['xreceiversubmitmessage'] . ' in this conversation !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                            $xupdate5->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)You have blocked ' . $_POST['xreceiversubmitmessage'] . ' ! To unblock, send the word RM' . $_POST['xreceiversubmitmessage'] . ' in this conversation !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                         } else {
                                                                             $xupdate6 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                            $xupdate6->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)You have blocked ' . $_POST['xreceiversubmitmessage'] . ' ! To unblock, send the word RM' . $_POST['xreceiversubmitmessage'] . ' in this conversation !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                            $xupdate6->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)You have blocked ' . $_POST['xreceiversubmitmessage'] . ' ! To unblock, send the word RM' . $_POST['xreceiversubmitmessage'] . ' in this conversation !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                         }
                                                                     } else {
                                                                         $xupdate7 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                        $xupdate7->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)You have blocked ' . $_POST['xreceiversubmitmessage'] . ' ! To unblock, send the word RM' . $_POST['xreceiversubmitmessage'] . ' in this conversation !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                        $xupdate7->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)You have blocked ' . $_POST['xreceiversubmitmessage'] . ' ! To unblock, send the word RM' . $_POST['xreceiversubmitmessage'] . ' in this conversation !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                     }
                                                                 }
                                                             } else {
@@ -456,14 +462,14 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                                 if ($xmemessages !== '') {
                                                                     if (strpos($xmemessages, '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)') === false) {
                                                                         $xupdate8 = $xconnection->prepare("UPDATE userstable SET messages=CONCAT(messages, ?) WHERE username=?");
-                                                                        $xupdate8->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $_POST['xreceiversubmitmessage'] . ' blocked you !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                        $xupdate8->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $_POST['xreceiversubmitmessage'] . ' blocked you !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                     } else {
                                                                         $xupdate9 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                        $xupdate9->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $_POST['xreceiversubmitmessage'] . ' blocked you !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                        $xupdate9->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $_POST['xreceiversubmitmessage'] . ' blocked you !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                     }
                                                                 } else {
                                                                     $xupdate10 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                    $xupdate10->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $_POST['xreceiversubmitmessage'] . ' blocked you !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                    $xupdate10->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $_POST['xreceiversubmitmessage'] . ' blocked you !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                 }
                                                             }
                                                         } else {
@@ -471,34 +477,34 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                             if ($xmemessages !== '') {
                                                                 if (strpos($xmemessages, '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)') === false) {
                                                                     $xupdate11 = $xconnection->prepare("UPDATE userstable SET messages=CONCAT(messages, ?) WHERE username=?");
-                                                                    $xupdate11->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)User with username ' . $_POST['xreceiversubmitmessage'] . ' not found !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                    $xupdate11->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)User with username ' . $_POST['xreceiversubmitmessage'] . ' not found !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                 } else {
                                                                     $xupdate12 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                    $xupdate12->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)User with username ' . $_POST['xreceiversubmitmessage'] . ' not found !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                    $xupdate12->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)User with username ' . $_POST['xreceiversubmitmessage'] . ' not found !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xmemessages), $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                                 }
                                                             } else {
                                                                 $xupdate13 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                $xupdate13->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)User with username ' . $_POST['xreceiversubmitmessage'] . ' not found !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                                                $xupdate13->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)User with username ' . $_POST['xreceiversubmitmessage'] . ' not found !(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect2_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                                             }
                                                         }
                                                     }
 
-                                                    if (!empty($xselect3)) {
+                                                    if (!empty($xselect3_r)) {
 
-                                                        if (strpos($xselect3['blocks'], '(b)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(bb)') === false) {
-                                                            if (strpos($xselect2['blocks'], '(b)' . $_POST['xreceiversubmitmessage'] . '(bb)') === false) {
+                                                        if (strpos($xselect3_r['blocks'], '(b)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(bb)') === false) {
+                                                            if (strpos($xselect2_r['blocks'], '(b)' . $_POST['xreceiversubmitmessage'] . '(bb)') === false) {
 
                                                                 if ($xreceivermessages !== '') {
                                                                     if (strpos($xreceivermessages, '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)') === false) {
                                                                         $xupdate14 = $xconnection->prepare("UPDATE userstable SET messages=CONCAT(messages, ?) WHERE username=?");
-                                                                        $xupdate14->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xreceiverfilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect3['creationdate']), $_POST['xreceiversubmitmessage']]);
+                                                                        $xupdate14->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xreceiverfilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect3_r['creationdate']), $_POST['xreceiversubmitmessage']]);
                                                                     } else {
                                                                         $xupdate15 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                        $xupdate15->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xreceiverfilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xreceivermessages), $creationdate = $xselect3['creationdate']), $_POST['xreceiversubmitmessage']]);
+                                                                        $xupdate15->execute([xencryptmessages($xmessages = str_replace('(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xreceiverfilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $xreceivermessages), $creationdate = $xselect3_r['creationdate']), $_POST['xreceiversubmitmessage']]);
                                                                     }
                                                                 } else {
                                                                     $xupdate16 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                    $xupdate16->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xreceiverfilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect3['creationdate']), $_POST['xreceiversubmitmessage']]);
+                                                                    $xupdate16->execute([xencryptmessages($xmessages = '(p)(c)(w)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(ww)(m)' . $xreceiverfilespath . $xmessagesubmitmessage . '(mm)(d)' . $xdatetime . '(dd)(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)(cc)(pp)', $creationdate = $xselect3_r['creationdate']), $_POST['xreceiversubmitmessage']]);
                                                                 }
                                                             }
                                                         }
@@ -513,7 +519,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                     }
                                 }
                             }
-                        } catch (PDOException $e) {
+                        } catch (Throwable $e) {
                             echo json_encode(array("xmessage" => "Unfortunately, there is a problem !", "xtype" => "#ffa500"));
                         } finally {
                             $xconnection = null;
@@ -532,7 +538,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xreceivemessages']) && !empty($_POST['xreceivemessages']) && preg_match('/^[a-z]+$/', $_POST['xreceivemessages']) && $_POST['xreceivemessages'] === 'xtrue') {
+    if (isset($_POST['xreceivemessages']) && !empty($_POST['xreceivemessages']) && preg_match('/^[a-z]+$/', $_POST['xreceivemessages']) && $_POST['xreceivemessages'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
             try {
@@ -541,18 +547,18 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                 $xselect1 = $xconnection->prepare("SELECT creationdate, messages FROM userstable WHERE username=?");
                 $xselect1->execute([htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                if (!empty($xselect1)) {#😂
-                    $xmemessages = xdecryptmessages($xmessages = $xselect1['messages'], $creationdate = $xselect1['creationdate']);
+                if (!empty($xselect1_r)) {#😂
+                    $xmemessages = xdecryptmessages($xmessages = $xselect1_r['messages'], $creationdate = $xselect1_r['creationdate']);
 
                     if ($xmemessages !== false) {
 
-                        if ($xselect1['messages'] !== '') {
+                        if ($xselect1_r['messages'] !== '') {
 
                             if (strpos($xmemessages, '(p)(pp)') !== false) {
                                 $xupdate1 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                $xupdate1->execute([xencryptmessages($xmessages = str_replace('(p)(pp)', '', $xmemessages), $creationdate = $xselect1['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                $xupdate1->execute([xencryptmessages($xmessages = str_replace('(p)(pp)', '', $xmemessages), $creationdate = $xselect1_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                             } else {
 
                                 $xchilds = [];
@@ -560,17 +566,18 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                                 $xparent = array_values(array_filter(explode('(p)', $xmemessages)));
 
+                                $xselect2 = $xconnection->prepare("SELECT creationdate, messages, status FROM userstable WHERE username=?");
+
                                 for ($i = 0; $i < count($xparent); $i++) {
                                     $xchild = array_values(array_filter(explode('(c)', $xparent[$i])));
 
                                     $xusername = substr($xparent[$i], (strpos($xparent[$i], '(u)') + 3), (strpos($xparent[$i], '(uu)', (strpos($xparent[$i], '(u)') + 3))) - (strpos($xparent[$i], '(u)') + 3));
 
-                                    $xselect2 = $xconnection->prepare("SELECT creationdate, messages, status FROM userstable WHERE username=?");
                                     $xselect2->execute([$xusername]);
-                                    $xselect2 = $xselect2->fetch(PDO::FETCH_ASSOC);
+                                    $xselect2_r = $xselect2->fetch(PDO::FETCH_ASSOC);
 
-                                    if (!empty($xselect2)) {
-                                        $xreceivermessages = xdecryptmessages($xmessages = $xselect2['messages'], $creationdate = $xselect2['creationdate']);
+                                    if (!empty($xselect2_r)) {
+                                        $xreceivermessages = xdecryptmessages($xmessages = $xselect2_r['messages'], $creationdate = $xselect2_r['creationdate']);
 
                                         if ($xreceivermessages !== false) {
 
@@ -596,7 +603,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                 }
                                             }
 
-                                            if ((abs(strtotime($xdatetime)) - abs(strtotime($xselect2['status']))) < 2) {
+                                            if ((abs(strtotime($xdatetime)) - abs(strtotime($xselect2_r['status']))) < 2) {
                                                 $xstatus = 'online';
                                             }
                                             $xchilds[$i] = end($xchild) . '(r)' . $xunreads . '(rr)(n)' . count($xchild) . '(nn)(o)' . $xstatus . '(oo)';
@@ -648,10 +655,10 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                         $xtick = '✓ ';
                                     }
 
-                                    $ximageaccount = ximageaccount('./' . $xusername);
+                                    $xaccountimage = xaccountimage('./' . $xusername);
                                     if (explode(' ', $xdate)[0] === explode(' ', $xdatetime)[0]) {
                                         $xmessagedisplay .= '<div class="xbfm" datavalue="' . $xusername . '">'
-                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . $ximageaccount . '?t=' . filemtime($ximageaccount) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
+                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . $xaccountimage . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
                                                 . '<div class="xbfmd">' . $xusername . '</div>'
                                                 . '<div class="xellipsis">' . $xmessage . '</div>'
                                                 . '<div class="xbfmd xbfmt">' . $xtick . explode(' ', $xdate)[1] . '</div>'
@@ -660,7 +667,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                 . '</div>';
                                     } else {
                                         $xmessagedisplay .= '<div class="xbfm" datavalue="' . $xusername . '">'
-                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . $ximageaccount . '?t=' . filemtime($ximageaccount) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
+                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . $xaccountimage . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
                                                 . '<div class="xbfmd">' . $xusername . '</div>'
                                                 . '<div class="xellipsis">' . $xmessage . '</div>'
                                                 . '<div class="xbfmd xbfmt">' . $xtick . $xdate . '</div>'
@@ -681,7 +688,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                         return false;
                     }
                 }
-            } catch (PDOException $e) {
+            } catch (Throwable $e) {
                 echo '<div class="xproblem">Unfortunately, there is a problem !</div>';
             } finally {
                 $xconnection = null;
@@ -689,7 +696,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xreceivemessage']) && !empty($_POST['xreceivemessage']) && preg_match('/^[a-z]+$/', $_POST['xreceivemessage']) && $_POST['xreceivemessage'] === 'xtrue') {
+    if (isset($_POST['xreceivemessage']) && !empty($_POST['xreceivemessage']) && preg_match('/^[a-z]+$/', $_POST['xreceivemessage']) && $_POST['xreceivemessage'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST["xuserreceivemessage"]) && !empty($_POST['xuserreceivemessage']) && preg_match('/^[a-z0-9]+$/', $_POST['xuserreceivemessage']) && strlen($_POST["xuserreceivemessage"]) <= 32) {
 
@@ -699,31 +706,31 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                     $xselect1 = $xconnection->prepare("SELECT creationdate, messages, status FROM userstable WHERE username=?");
                     $xselect1->execute([htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                    $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                    $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                    if (!empty($xselect1)) {#😂
-                        $xmemessages = xdecryptmessages($xmessages = $xselect1['messages'], $creationdate = $xselect1['creationdate']);
+                    if (!empty($xselect1_r)) {#😂
+                        $xmemessages = xdecryptmessages($xmessages = $xselect1_r['messages'], $creationdate = $xselect1_r['creationdate']);
 
                         if ($xmemessages !== false) {
 
-                            if ($xselect1['messages'] !== '') {
+                            if ($xselect1_r['messages'] !== '') {
 
                                 $xmestatus = 'xoff';
-                                if ((abs(strtotime($xdatetime)) - abs(strtotime($xselect1['status']))) < 2) {
+                                if ((abs(strtotime($xdatetime)) - abs(strtotime($xselect1_r['status']))) < 2) {
                                     $xmestatus = 'xon';
                                 }
 
                                 $xselect2 = $xconnection->prepare("SELECT creationdate, messages, status FROM userstable WHERE username=?");
                                 $xselect2->execute([$_POST['xuserreceivemessage']]);
-                                $xselect2 = $xselect2->fetch(PDO::FETCH_ASSOC);
+                                $xselect2_r = $xselect2->fetch(PDO::FETCH_ASSOC);
 
-                                if (!empty($xselect2)) {
-                                    $xreceivermessages = xdecryptmessages($xmessages = $xselect2['messages'], $creationdate = $xselect2['creationdate']);
+                                if (!empty($xselect2_r)) {
+                                    $xreceivermessages = xdecryptmessages($xmessages = $xselect2_r['messages'], $creationdate = $xselect2_r['creationdate']);
 
                                     if ($xreceivermessages !== false) {
 
                                         $xreceiverstatus = 'xoff';
-                                        if ((abs(strtotime($xdatetime)) - abs(strtotime($xselect2['status']))) < 2) {
+                                        if ((abs(strtotime($xdatetime)) - abs(strtotime($xselect2_r['status']))) < 2) {
                                             $xreceiverstatus = 'xon';
                                         }
 
@@ -732,7 +739,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                                         if (strpos($xmemessages, '(p)(pp)') !== false) {
                                             $xupdate1 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                            $xupdate1->execute([xencryptmessages($xmessages = str_replace('(p)(pp)', '', $xmemessages), $creationdate = $xselect1['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                            $xupdate1->execute([xencryptmessages($xmessages = str_replace('(p)(pp)', '', $xmemessages), $creationdate = $xselect1_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
                                         } else {
 
                                             $xparent = array_values(array_filter(explode('(p)', $xmemessages)));
@@ -761,7 +768,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                             $xtick = '✓ ';
                                                         }
 
-                                                        $ximageaccount = ximageaccount('./' . $xusername);
+                                                        $xaccountimage = xaccountimage('./' . $xusername);
                                                         if ($xusername === htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')) {
 
                                                             if (explode(' ', $xdate)[0] === explode(' ', $xdatetime)[0]) {
@@ -782,7 +789,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                             }
 
                                                             $xmessagedisplay .= '<div class="xbfmm ' . $xsbr . '" id="xm' . str_replace(['-', ' ', ':'], '', $xdate2) . '" datavalue="' . $xdate2 . '">'
-                                                                    . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . $ximageaccount . '?t=' . filemtime($ximageaccount) . '"><div class="xbfms ' . $xmestatus . '"></div></div></div>'
+                                                                    . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . $xaccountimage . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xmestatus . '"></div></div></div>'
                                                                     . '<div class="xbfmd">' . $xusername . ' :</div>'
                                                                     . '<div class="xbfmcm">' . $xmessage . '</div>'
                                                                     . '<div class="xbfmdm xfz">' . $xtick . $xdate . '</div>'
@@ -807,7 +814,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                             }
 
                                                             $xmessagedisplay .= '<div class="xbfmr ' . $xsbr . '">'
-                                                                    . '<div class="xbfmdr"><div class="xbfma"><img class="xbfmimg" src="' . $ximageaccount . '?t=' . filemtime($ximageaccount) . '"><div class="xbfms ' . $xreceiverstatus . '"></div></div></div>'
+                                                                    . '<div class="xbfmdr"><div class="xbfma"><img class="xbfmimg" src="' . $xaccountimage . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xreceiverstatus . '"></div></div></div>'
                                                                     . '<div class="xbfmdr">' . $xusername . ' :</div>'
                                                                     . '<div class="xbfmcr">' . $xmessage . '</div>'
                                                                     . '<div class="xbfmd xfz">' . $xtick . $xdate . '</div>'
@@ -826,6 +833,8 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                         $xoldparent = '';
                                         $xparent = array_values(array_filter(explode('(p)', $xreceivermessages)));
 
+                                        $xupdate2 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
+
                                         for ($i = count($xparent) - 1; $i >= 0; $i--) {
 
                                             if (strpos($xparent[$i], '(u)' . htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8') . '(uu)') !== false) {
@@ -838,8 +847,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                         if (strpos($xdate, '✓') === false) {
                                                             $xparent[$i] = str_replace($xdate, '✓ ' . $xdate, $xparent[$i]);
 
-                                                            $xupdate2 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                            $xupdate2->execute([xencryptmessages($xmessages = str_replace($xoldparent, $xparent[$i], $xreceivermessages), $creationdate = $xselect2['creationdate']), $_POST['xuserreceivemessage']]);
+                                                            $xupdate2->execute([xencryptmessages($xmessages = str_replace($xoldparent, $xparent[$i], $xreceivermessages), $creationdate = $xselect2_r['creationdate']), $_POST['xuserreceivemessage']]);
                                                         }
                                                     }
                                                 }
@@ -861,7 +869,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                             return false;
                         }
                     }
-                } catch (PDOException $e) {
+                } catch (Throwable $e) {
                     echo '<div class="xproblem">Unfortunately, there is a problem !</div>';
                 } finally {
                     $xconnection = null;
@@ -870,7 +878,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xdelmsg']) && !empty($_POST['xdelmsg']) && preg_match('/^[a-z]+$/', $_POST['xdelmsg']) && $_POST['xdelmsg'] === 'xtrue') {
+    if (isset($_POST['xdelmsg']) && !empty($_POST['xdelmsg']) && preg_match('/^[a-z]+$/', $_POST['xdelmsg']) && $_POST['xdelmsg'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST["xdelmsgdate"]) && !empty($_POST['xdelmsgdate']) && preg_match('/^[0-9: -]+$/', $_POST['xdelmsgdate']) && strlen($_POST["xdelmsgdate"]) <= 19) {
 
@@ -878,14 +886,18 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                     $xselect1 = $xconnection->prepare("SELECT creationdate, messages FROM userstable WHERE username=?");
                     $xselect1->execute([htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                    $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                    $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                    if (!empty($xselect1)) {#😂
-                        $xmemessages = xdecryptmessages($xmessages = $xselect1['messages'], $creationdate = $xselect1['creationdate']);
+                    if (!empty($xselect1_r)) {#😂
+                        $xmemessages = xdecryptmessages($xmessages = $xselect1_r['messages'], $creationdate = $xselect1_r['creationdate']);
 
                         if ($xmemessages !== false) {
 
                             $xparent = array_values(array_filter(explode('(p)', $xmemessages)));
+
+                            $xupdate1 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
+                            $xselect2 = $xconnection->prepare("SELECT creationdate, messages FROM userstable WHERE username=?");
+                            $xupdate2 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
 
                             for ($i = count($xparent) - 1; $i >= 0; $i--) {
 
@@ -904,8 +916,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                 $xfind = '(c)' . $xchild[$j];
                                             }
 
-                                            $xupdate1 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                            $xupdate1->execute([xencryptmessages($xmessages = str_replace($xfind, '', $xmemessages), $creationdate = $xselect1['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                            $xupdate1->execute([xencryptmessages($xmessages = str_replace($xfind, '', $xmemessages), $creationdate = $xselect1_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
 
                                             $xdelfiles = $xfind;
                                             while (strpos($xdelfiles, 'target="_blank"') !== false) {
@@ -921,12 +932,11 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                             $xreceiverusername = substr($xchild[$j], (strpos($xchild[$j], '(u)') + 3), (strpos($xchild[$j], '(uu)', (strpos($xchild[$j], '(u)') + 3))) - (strpos($xchild[$j], '(u)') + 3));
                                             if ($xreceiverusername !== htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')) {
 
-                                                $xselect2 = $xconnection->prepare("SELECT creationdate, messages FROM userstable WHERE username=?");
                                                 $xselect2->execute([$xreceiverusername]);
-                                                $xselect2 = $xselect2->fetch(PDO::FETCH_ASSOC);
+                                                $xselect2_r = $xselect2->fetch(PDO::FETCH_ASSOC);
 
-                                                if (!empty($xselect2)) {
-                                                    $xreceivermessages = xdecryptmessages($xmessages = $xselect2['messages'], $creationdate = $xselect2['creationdate']);
+                                                if (!empty($xselect2_r)) {
+                                                    $xreceivermessages = xdecryptmessages($xmessages = $xselect2_r['messages'], $creationdate = $xselect2_r['creationdate']);
 
                                                     if ($xreceivermessages !== false) {
 
@@ -949,8 +959,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                                                                             $xfind = '(c)' . $xchild[$j];
                                                                         }
 
-                                                                        $xupdate2 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                                                        $xupdate2->execute([xencryptmessages($xmessages = str_replace($xfind, '', $xreceivermessages), $creationdate = $xselect2['creationdate']), $xreceiverusername]);
+                                                                        $xupdate2->execute([xencryptmessages($xmessages = str_replace($xfind, '', $xreceivermessages), $creationdate = $xselect2_r['creationdate']), $xreceiverusername]);
 
                                                                         $xdelfiles = $xfind;
                                                                         while (strpos($xdelfiles, 'target="_blank"') !== false) {
@@ -987,7 +996,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                             return false;
                         }
                     }
-                } catch (PDOException $e) {
+                } catch (Throwable $e) {
                     echo '<div class="xproblem">Unfortunately, there is a problem !</div>';
                 } finally {
                     $xconnection = null;
@@ -996,7 +1005,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xdelmsgs']) && !empty($_POST['xdelmsgs']) && preg_match('/^[a-z]+$/', $_POST['xdelmsgs']) && $_POST['xdelmsgs'] === 'xtrue') {
+    if (isset($_POST['xdelmsgs']) && !empty($_POST['xdelmsgs']) && preg_match('/^[a-z]+$/', $_POST['xdelmsgs']) && $_POST['xdelmsgs'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST["xdelmsgsusername"]) && !empty($_POST['xdelmsgsusername']) && preg_match('/^[a-z0-9]+$/', $_POST['xdelmsgsusername']) && strlen($_POST["xdelmsgsusername"]) <= 32) {
 
@@ -1004,21 +1013,22 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
 
                     $xselect1 = $xconnection->prepare("SELECT creationdate, messages FROM userstable WHERE username=?");
                     $xselect1->execute([htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                    $xselect1 = $xselect1->fetch(PDO::FETCH_ASSOC);
+                    $xselect1_r = $xselect1->fetch(PDO::FETCH_ASSOC);
 
-                    if (!empty($xselect1)) {#😂
-                        $xmemessages = xdecryptmessages($xmessages = $xselect1['messages'], $creationdate = $xselect1['creationdate']);
+                    if (!empty($xselect1_r)) {#😂
+                        $xmemessages = xdecryptmessages($xmessages = $xselect1_r['messages'], $creationdate = $xselect1_r['creationdate']);
 
                         if ($xmemessages !== false) {
 
                             $xparent = array_values(array_filter(explode('(p)', $xmemessages)));
 
+                            $xupdate1 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
+
                             for ($i = count($xparent) - 1; $i >= 0; $i--) {
 
                                 if (strpos($xparent[$i], '(u)' . $_POST['xdelmsgsusername'] . '(uu)') !== false) {
 
-                                    $xupdate1 = $xconnection->prepare("UPDATE userstable SET messages=? WHERE username=?");
-                                    $xupdate1->execute([xencryptmessages($xmessages = str_replace('(p)' . $xparent[$i], '', $xmemessages), $creationdate = $xselect1['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
+                                    $xupdate1->execute([xencryptmessages($xmessages = str_replace('(p)' . $xparent[$i], '', $xmemessages), $creationdate = $xselect1_r['creationdate']), htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
 
                                     $xdelfiles = $xparent[$i];
                                     while (strpos($xdelfiles, 'target="_blank"') !== false) {
@@ -1038,7 +1048,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
                             return false;
                         }
                     }
-                } catch (PDOException $e) {
+                } catch (Throwable $e) {
                     echo '<div class="xproblem">Unfortunately, there is a problem !</div>';
                 } finally {
                     $xconnection = null;
@@ -1047,14 +1057,14 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xblockuser']) && !empty($_POST['xblockuser']) && preg_match('/^[a-z]+$/', $_POST['xblockuser']) && $_POST['xblockuser'] === 'xtrue') {
+    if (isset($_POST['xblockuser']) && !empty($_POST['xblockuser']) && preg_match('/^[a-z]+$/', $_POST['xblockuser']) && $_POST['xblockuser'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST["xblockuserusername"]) && !empty($_POST['xblockuserusername']) && preg_match('/^[a-z0-9]+$/', $_POST['xblockuserusername']) && strlen($_POST["xblockuserusername"]) <= 32 && $_POST['xblockuserusername'] !== htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')) {
                 try {
 
                     $xupdate1 = $xconnection->prepare("UPDATE userstable SET blocks=CONCAT(blocks, ?) WHERE username=?");
                     $xupdate1->execute(['(b)' . $_POST['xblockuserusername'] . '(bb)', htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8')]);
-                } catch (PDOException $e) {
+                } catch (Throwable $e) {
                     echo '<div class="xproblem">Unfortunately, there is a problem !</div>';
                 } finally {
                     $xconnection = null;
@@ -1063,7 +1073,7 @@ if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialcha
         }
     }
 
-    if (isset($_POST['xlogout']) && !empty($_POST['xlogout']) && preg_match('/^[a-z]+$/', $_POST['xlogout']) && $_POST['xlogout'] === 'xtrue') {
+    if (isset($_POST['xlogout']) && !empty($_POST['xlogout']) && preg_match('/^[a-z]+$/', $_POST['xlogout']) && $_POST['xlogout'] === "xtrue" && empty($_FILES)) {
         if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION = [];
             session_destroy();
