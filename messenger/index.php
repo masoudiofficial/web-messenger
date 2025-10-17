@@ -17,11 +17,11 @@ xgeneratecsrftoken();
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="keywords" content="messenger">
         <meta name="robots" content="index, follow">
-        <meta name="description" content="This project was developed by @masoudiofficial, all the code in the messages file is the result of his ideas and creativity.">
+        <meta name="description" content="This project was developed by @masoudiofficial, and all the code in the script.php file is the result of his ideas and creativity.">
         <link rel="canonical" href="http://localhost/messenger/">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0"/>
-        <link rel="stylesheet" type="text/css" href="./styles.css?t=<?php echo filemtime('./styles.css'); ?>">
-        <link rel="icon" type="image/png" href="./imageaccount.png">
+        <link rel="stylesheet" type="text/css" href="./style.css?t=<?php echo filemtime('./style.css'); ?>">
+        <link rel="icon" type="image/png" href="./accountimage.png">
     </head>
     <body>
 
@@ -56,8 +56,8 @@ xgeneratecsrftoken();
                     <div class="xverticalscroll xsettings" id="xsettings">
                         <div class="xwelcome"></div>
                         <div class="xdivision">
-                            <div class="ximageaccount">Image account :</div>
-                            <div class="ximageaccountdiv"><img class="xselectimage" id="xselectimage"></div>
+                            <div class="xaccountimage">Image account :</div>
+                            <div class="xaccountimagediv"><img class="xselectimage" id="xselectimage"></div>
                             <input type="file" class="ximagetoupload" id="ximagetoupload" accept=".gif, .jpeg, .jpg, .png, .webp">
                             <div class="xallowedformats">allowed formats : gif, jpeg, jpg, png, webp</div>
                         </div>
@@ -124,7 +124,7 @@ xgeneratecsrftoken();
                         }
                         xstartTime(<?php echo (86400 - (time() - htmlspecialchars(strip_tags($_SESSION['user-info'][2]), ENT_QUOTES, 'UTF-8'))); ?>);
                     </script>
-                    <script src="./functions.js?t=<?php echo filemtime('./functions.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
+                    <script src="./script.js?t=<?php echo filemtime('./script.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
 
                     <?php
                 } else {
@@ -202,7 +202,7 @@ xgeneratecsrftoken();
                             const xaddpersonpassword = encodeURIComponent(document.getElementById("xaddpersonpassword").value);
                             const formData = 'xaddperson=xtrue&xaddpersonusername=' + xaddpersonusername + '&xaddpersonpassword=' + xaddpersonpassword;
                             try {
-                                const response = await fetch('./messages.php', {
+                                const response = await fetch('./script.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -231,7 +231,7 @@ xgeneratecsrftoken();
                             formData.append('xloginpassword', document.getElementById('xloginpassword').value);
                             formData.append('xtokenlogin', document.getElementById('xtokenlogin').value);
                             try {
-                                const response = await fetch("./messages.php", {
+                                const response = await fetch("./script.php", {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -263,7 +263,7 @@ xgeneratecsrftoken();
                             formData.append('xdeletepersonusername', document.getElementById("xdeletepersonusername").value);
                             formData.append('xdeletepersonpassword', document.getElementById("xdeletepersonpassword").value);
                             try {
-                                const response = await fetch("./messages.php", {
+                                const response = await fetch("./script.php", {
                                     method: 'POST',
                                     body: formData
                                 });
