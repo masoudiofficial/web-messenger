@@ -1,12 +1,6 @@
 <?php
 include_once './config.php';
 
-function xgeneratecsrftoken() {
-    if (!isset($_SESSION['xtokenlogin'])) {
-        $_SESSION['xtokenlogin'] = array(bin2hex(random_bytes(64)), 1);
-    }
-}
-
 xgeneratecsrftoken();
 ?>
 <!DOCTYPE html>
@@ -50,7 +44,7 @@ xgeneratecsrftoken();
             <div class="xscrollbar xboxes">
 
                 <?php
-                if (isset($_SESSION['user-username'], $_SESSION['user-info']) && (htmlspecialchars(strip_tags($_SESSION['user-info'][0]), ENT_QUOTES, 'UTF-8') === $_SERVER['REMOTE_ADDR']) && (htmlspecialchars(strip_tags($_SESSION['user-info'][1]), ENT_QUOTES, 'UTF-8') === $_SERVER['HTTP_USER_AGENT']) && (time() - htmlspecialchars(strip_tags($_SESSION['user-info'][2]), ENT_QUOTES, 'UTF-8') <= 86400) && (htmlspecialchars(strip_tags($_SESSION['user-username'][3]), ENT_QUOTES, 'UTF-8') === htmlspecialchars(strip_tags($_SESSION['user-info'][3]), ENT_QUOTES, 'UTF-8'))) {
+                if (xauthentication()) {
                     ?>
 
                     <div class="xverticalscroll xsettings" id="xsettings">
@@ -106,7 +100,7 @@ xgeneratecsrftoken();
                     </div>
 
                     <script nonce="<?php echo $xnonce; ?>">
-                        document.querySelector('.xwelcome').innerText = 'Welcome <?php echo htmlspecialchars(strip_tags($_SESSION['user-username'][0]), ENT_QUOTES, 'UTF-8'); ?> :';
+                        document.querySelector('.xwelcome').innerText = 'Welcome <?php echo $_SESSION['user-username'][0]; ?> :';
 
                         function xstartTime(xtime) {
                             var date = new Date(0);
@@ -122,7 +116,7 @@ xgeneratecsrftoken();
                                 }
                             }, 1000);
                         }
-                        xstartTime(<?php echo (86400 - (time() - htmlspecialchars(strip_tags($_SESSION['user-info'][2]), ENT_QUOTES, 'UTF-8'))); ?>);
+                        xstartTime(<?php echo (86400 - (time() - $_SESSION['user-info'][2])); ?>);
                     </script>
                     <script src="./script.js?t=<?php echo filemtime('./script.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
 
@@ -142,7 +136,7 @@ xgeneratecsrftoken();
                             <button type="button" class="xbuttons xaddpersonbutton" id="xaddpersonbutton"><span class="material-symbols-rounded">person_add</span></button>
                         </div>
                         <div id="xloginaccount" class="tabcontent">
-                            <input type="hidden" id="xtokenlogin" value="<?php echo htmlspecialchars(strip_tags($_SESSION['xtokenlogin'][0]), ENT_QUOTES, 'UTF-8'); ?>">
+                            <input type="hidden" id="xtokenlogin" value="<?php echo $_SESSION['xtokenlogin'][0]; ?>">
                             <input type="text" class="xinputs xloginusername" id="xloginusername" maxlength="32" spellcheck="false" placeholder="Username" autocomplete="off">
                             <input type="text" class="xinputs xloginpassword" id="xloginpassword" spellcheck="false" placeholder="Password" autocomplete="off">
                             <button type="button" class="xbuttons xloginbutton" id="xloginbutton"><span class="material-symbols-rounded">login</span></button>
