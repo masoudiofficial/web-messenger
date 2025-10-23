@@ -13,6 +13,32 @@ header("Access-Control-Allow-Headers: Content-Type");
 $xnonce = base64_encode(hash('sha512', str_shuffle('g1o9vVT)D$2Pkzba4hG7u&rLF5HMfe@Ni^sU%WBQI(dYt6nA#X8c0ERmKCwx*SlOpqjZJ!3y') . random_bytes(64), true));
 header("Content-Security-Policy: script-src 'nonce-$xnonce'; style-src 'self' 'nonce-$xnonce' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com");
 
+function xgeneratecsrftoken() {
+    if (!isset($_SESSION['xtokenlogin'])) {
+        $_SESSION['xtokenlogin'] = array(bin2hex(random_bytes(64)), 1);
+    }
+}
+
+$key1 = 't4fnWN%&hDOLZg98z$lEJG7!C*KjxX)@USH6pcsB3(MQdy1iFI#PukAoaqVver2R^5YTm0bw';
+$key2 = 'ypFZJh!v)om3zs%(YSn60ED4LUjfAN#8C7aXKle5^*&xbd2McIHk1$t@uTBwVPRiGQ9gOrWq';
+
+function xauthentication() {
+    return (isset($_SESSION['user-username'], $_SESSION['user-info']) &&
+            is_array($_SESSION['user-username']) && is_array($_SESSION['user-info']) &&
+            !empty($_SESSION['user-username']) && !empty($_SESSION['user-info']) &&
+            isset($_SESSION['user-username'][0], $_SESSION['user-username'][1], $_SESSION['user-username'][2], $_SESSION['user-username'][3], $_SESSION['user-username'][4]) &&
+            is_string($_SESSION['user-username'][0]) && is_int($_SESSION['user-username'][1]) && is_int($_SESSION['user-username'][2]) && is_string($_SESSION['user-username'][3]) && is_string($_SESSION['user-username'][4]) &&
+            !empty($_SESSION['user-username'][0]) && !empty($_SESSION['user-username'][1]) && !empty($_SESSION['user-username'][2]) && !empty($_SESSION['user-username'][3]) && !empty($_SESSION['user-username'][4]) &&
+            isset($_SESSION['user-info'][0], $_SESSION['user-info'][1], $_SESSION['user-info'][2], $_SESSION['user-info'][3]) &&
+            is_string($_SESSION['user-info'][0]) && is_string($_SESSION['user-info'][1]) && is_int($_SESSION['user-info'][2]) && is_string($_SESSION['user-info'][3]) &&
+            !empty($_SESSION['user-info'][0]) && !empty($_SESSION['user-info'][1]) && !empty($_SESSION['user-info'][2]) && !empty($_SESSION['user-info'][3]) &&
+            hash_equals($_SESSION['user-username'][3], $_SESSION['user-info'][3]) &&
+            hash_equals($_SESSION['user-username'][4], session_id()) &&
+            ($_SESSION['user-info'][1] === $_SERVER['HTTP_USER_AGENT']) &&
+            ($_SESSION['user-info'][0] === $_SERVER['REMOTE_ADDR']) &&
+            ((time() - $_SESSION['user-info'][2]) <= 86400));
+}
+
 $servername = "localhost";
 $databasename = "messenger";
 $username = "root";
