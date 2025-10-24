@@ -1,5 +1,9 @@
 <?php
-include_once './config.php';
+try {
+    require_once __DIR__ . '/config.php';
+} catch (Throwable $e) {
+    die("Unfortunately, there is a problem !");
+}
 
 xgeneratecsrftoken();
 ?>
