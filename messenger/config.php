@@ -19,9 +19,6 @@ function xgeneratecsrftoken() {
     }
 }
 
-$key1 = 't4fnWN%&hDOLZg98z$lEJG7!C*KjxX)@USH6pcsB3(MQdy1iFI#PukAoaqVver2R^5YTm0bw';
-$key2 = 'ypFZJh!v)om3zs%(YSn60ED4LUjfAN#8C7aXKle5^*&xbd2McIHk1$t@uTBwVPRiGQ9gOrWq';
-
 function xauthentication() {
     return (isset($_SESSION['user-username'], $_SESSION['user-info']) &&
             is_array($_SESSION['user-username']) && is_array($_SESSION['user-info']) &&
@@ -39,11 +36,22 @@ function xauthentication() {
             ((time() - $_SESSION['user-info'][2]) <= 86400));
 }
 
-$servername = "localhost";
-$databasename = "messenger";
-$username = "root";
-$password = "";
-$charset = "utf8mb4";
+function xloadEnv() {
+    foreach (file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $xline) {
+        putenv(trim($xline));
+    }
+}
+
+xloadEnv(__DIR__ . '/.env'); #Keep it outside the public directory 😂
+
+$key1 = getenv('key1');
+$key2 = getenv('key2');
+
+$servername = getenv('servername');
+$databasename = getenv('databasename');
+$username = getenv('username');
+$password = getenv('password');
+$charset = getenv('charset');
 try {
     $xconnection = new PDO("mysql:host=$servername;dbname=$databasename;charset=$charset;", $username, $password);
     $xconnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
