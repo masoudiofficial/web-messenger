@@ -38,11 +38,11 @@ function xauthentication() {
 
 function xloadEnv() {
     foreach (file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $xline) {
-        putenv(trim($xline));
+        putenv($xline);
     }
 }
 
-xloadEnv(__DIR__ . '/.env'); #Keep it outside the public directory 😂
+xloadEnv(); #Keep it (.env) outside the public directory 😂
 
 $key1 = getenv('key1');
 $key2 = getenv('key2');
