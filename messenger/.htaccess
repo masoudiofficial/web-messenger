@@ -1,0 +1,9 @@
+
+Options -Indexes
+
+DirectoryIndex index.php
+
+<FilesMatch "(\.htaccess|config\.php|\.env)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
