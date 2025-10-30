@@ -1,10 +1,6 @@
 <?php
 
-try {
-    require_once __DIR__ . '/config.php';
-} catch (Throwable $e) {
-    die("Unfortunately, there is a problem !");
-}
+require_once __DIR__ . '/config.php';
 
 function xdatetime() {
     $now = new DateTime("now", new DateTimeZone("America/New_York"));
