@@ -20,7 +20,7 @@ function xgeneratecsrftoken() {
 }
 
 function xauthentication() {
-    return (isset($_SESSION['user-username'], $_SESSION['user-info']) &&
+    if (isset($_SESSION['user-username'], $_SESSION['user-info']) &&
             is_array($_SESSION['user-username']) && is_array($_SESSION['user-info']) &&
             !empty($_SESSION['user-username']) && !empty($_SESSION['user-info']) &&
             isset($_SESSION['user-username'][0], $_SESSION['user-username'][1], $_SESSION['user-username'][2], $_SESSION['user-username'][3], $_SESSION['user-username'][4]) &&
@@ -33,7 +33,11 @@ function xauthentication() {
             hash_equals($_SESSION['user-username'][4], session_id()) &&
             ($_SESSION['user-info'][1] === $_SERVER['HTTP_USER_AGENT']) &&
             ($_SESSION['user-info'][0] === $_SERVER['REMOTE_ADDR']) &&
-            ((time() - $_SESSION['user-info'][2]) <= 86400));
+            ((time() - $_SESSION['user-info'][2]) <= 86400)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function xloadEnv() {
