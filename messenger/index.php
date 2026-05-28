@@ -1,22 +1,21 @@
 <?php
-
-require_once __DIR__ . '/config.php';
-
+require_once './config.php';
+$_SESSION['xrequestreferrer'] = basename($_SERVER['SCRIPT_NAME']);
 xgeneratecsrftoken();
 ?>
 <!DOCTYPE html>
 <html lang="en-US" dir="ltr">
     <head>
         <title>Messenger</title>
+        <meta name="title" content="Messenger">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="keywords" content="messenger">
         <meta name="robots" content="index, follow">
         <meta name="description" content="This project was developed by @masoudiofficial, and all the code in the script.php file is the result of his ideas and creativity.">
-        <link rel="canonical" href="http://localhost/messenger/">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0"/>
-        <link rel="stylesheet" type="text/css" href="./style.css?t=<?php echo filemtime('./style.css'); ?>">
-        <link rel="icon" type="image/png" href="./accountimage.png">
+        <link rel="stylesheet" type="text/css" href="./src/style.css?t=<?php echo filemtime('./src/style.css'); ?>">
+        <link rel="icon" type="image/png" href="./assets/accountimage.png">
+        <link rel="canonical" href="http://localhost/messenger/index.php">
     </head>
     <body>
 
@@ -119,7 +118,7 @@ xgeneratecsrftoken();
                         }
                         xstartTime(<?php echo (86400 - (time() - $_SESSION['user-info'][2])); ?>);
                     </script>
-                    <script src="./script.js?t=<?php echo filemtime('./script.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
+                    <script src="./src/script.js?t=<?php echo filemtime('./src/script.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
 
                     <?php
                 } else {
@@ -197,7 +196,7 @@ xgeneratecsrftoken();
                             const xaddpersonpassword = encodeURIComponent(document.getElementById("xaddpersonpassword").value);
                             const formData = 'xaddperson=xtrue&xaddpersonusername=' + xaddpersonusername + '&xaddpersonpassword=' + xaddpersonpassword;
                             try {
-                                const response = await fetch('./script.php', {
+                                const response = await fetch('./modules/isud.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -208,7 +207,7 @@ xgeneratecsrftoken();
                                     throw new Error();
                                 }
                                 const responseJson = await response.json();
-                                if (responseJson && Object.keys(responseJson).length > 0) {
+                                if (responseJson) {
                                     document.getElementById("xaddpersonusername").value = "";
                                     document.getElementById("xaddpersonpassword").value = "";
                                     xalertmessage(responseJson.xmessage, responseJson.xtype);
@@ -226,7 +225,7 @@ xgeneratecsrftoken();
                             formData.append('xloginpassword', document.getElementById('xloginpassword').value);
                             formData.append('xtokenlogin', document.getElementById('xtokenlogin').value);
                             try {
-                                const response = await fetch("./script.php", {
+                                const response = await fetch("./modules/isud.php", {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -237,7 +236,7 @@ xgeneratecsrftoken();
                                     throw new Error();
                                 }
                                 const responseJson = await response.json();
-                                if (responseJson && Object.keys(responseJson).length > 0) {
+                                if (responseJson) {
                                     document.getElementById('xloginusername').value = '';
                                     document.getElementById('xloginpassword').value = '';
                                     if (responseJson.xmessage === 'Login !') {
@@ -258,7 +257,7 @@ xgeneratecsrftoken();
                             formData.append('xdeletepersonusername', document.getElementById("xdeletepersonusername").value);
                             formData.append('xdeletepersonpassword', document.getElementById("xdeletepersonpassword").value);
                             try {
-                                const response = await fetch("./script.php", {
+                                const response = await fetch("./modules/isud.php", {
                                     method: 'POST',
                                     body: formData
                                 });
@@ -266,7 +265,7 @@ xgeneratecsrftoken();
                                     throw new Error();
                                 }
                                 const responseJson = await response.json();
-                                if (responseJson && Object.keys(responseJson).length > 0) {
+                                if (responseJson) {
                                     document.getElementById("xdeletepersonusername").value = "";
                                     document.getElementById("xdeletepersonpassword").value = "";
                                     xalertmessage(responseJson.xmessage, responseJson.xtype);
