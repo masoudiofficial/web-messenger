@@ -19,7 +19,7 @@ Rate limiting to prevent abuse
 4 - Storage Visualization :  
 Circular graph showing usage per content type  
 5 - Data Structure :  
-Efficiently managed using a simple 6-column database table  
+Efficiently managed using a simple 7-column database table  
 ...  
 
 @masoudiofficial
