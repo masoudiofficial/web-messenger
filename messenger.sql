@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 17, 2025 at 10:28 AM
+-- Generation Time: May 20, 2026 at 01:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `userstable` (
   `username` char(32) NOT NULL,
+  `username2` char(62) NOT NULL,
   `password` char(255) NOT NULL,
   `creationdate` datetime NOT NULL,
   `messages` mediumtext NOT NULL,
@@ -44,7 +45,8 @@ CREATE TABLE `userstable` (
 -- Indexes for table `userstable`
 --
 ALTER TABLE `userstable`
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `username` (`username`),
+  ADD KEY `username2` (`username2`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
