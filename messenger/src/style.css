@@ -5,7 +5,6 @@
 html {
     scrollbar-width: none;
     -webkit-tap-highlight-color: transparent;
-
     -webkit-user-select: none;
     user-select: none;
 }
@@ -139,7 +138,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     border: 1px solid #BBBBBB;
     border-radius: 3px;
 
-    background-image: url("./background.png");
+    background-image: url("../assets/background.png");
     background-repeat: repeat;
     background-size: 166pt 144pt;
 
