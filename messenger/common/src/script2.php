@@ -1,6 +1,6 @@
 <?php
 
-namespace root\src\script2;
+namespace root\common\src\script2;
 
 if (isset($_SESSION['user-username']) && xauthentication()) {
 
@@ -22,4 +22,3 @@ if (isset($_SESSION['user-username']) && xauthentication()) {
     }
 
 }
-?>
