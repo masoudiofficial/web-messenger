@@ -1,6 +1,6 @@
 <?php
 require_once './config.php';
-$_SESSION['xrequestreferrer'] = basename($_SERVER['SCRIPT_NAME']);
+$_SESSION['user-username'][6] = 'index.php';
 xgeneratecsrftoken();
 ?>
 <!DOCTYPE html>
@@ -13,9 +13,9 @@ xgeneratecsrftoken();
         <meta name="robots" content="index, follow">
         <meta name="description" content="This project was developed by @masoudiofficial, and all the code in the script.php file is the result of his ideas and creativity.">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0"/>
-        <link rel="stylesheet" type="text/css" href="./src/style.css?t=<?php echo filemtime('./src/style.css'); ?>">
-        <link rel="icon" type="image/png" href="./assets/accountimage.png">
-        <link rel="canonical" href="http://localhost/messenger/index.php">
+        <link rel="stylesheet" type="text/css" href="./common/src/style.css?t=<?php echo filemtime('./common/src/style.css'); ?>">
+        <link rel="icon" type="image/png" href="./common/assets/accountimage.png">
+        <link rel="canonical" href="http://localhost/messenger/">
     </head>
     <body>
 
@@ -118,7 +118,7 @@ xgeneratecsrftoken();
                         }
                         xstartTime(<?php echo (86400 - (time() - $_SESSION['user-info'][2])); ?>);
                     </script>
-                    <script src="./src/script.js?t=<?php echo filemtime('./src/script.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
+                    <script src="./common/src/script.js?t=<?php echo filemtime('./common/src/script.js'); ?>" nonce="<?php echo $xnonce; ?>"></script>
 
                     <?php
                 } else {
@@ -196,7 +196,7 @@ xgeneratecsrftoken();
                             const xaddpersonpassword = encodeURIComponent(document.getElementById("xaddpersonpassword").value);
                             const formData = 'xaddperson=xtrue&xaddpersonusername=' + xaddpersonusername + '&xaddpersonpassword=' + xaddpersonpassword;
                             try {
-                                const response = await fetch('./modules/isud.php', {
+                                const response = await fetch('./common/modules/isud.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -211,6 +211,7 @@ xgeneratecsrftoken();
                                     document.getElementById("xaddpersonusername").value = "";
                                     document.getElementById("xaddpersonpassword").value = "";
                                     xalertmessage(responseJson.xmessage, responseJson.xtype);
+                                    setTimeout(() => { window.location.reload(); }, 1000);
                                 }
                             } catch (error) {
                                 xalertmessage("Unfortunately, there is a problem !", "#ffa500");
@@ -225,7 +226,7 @@ xgeneratecsrftoken();
                             formData.append('xloginpassword', document.getElementById('xloginpassword').value);
                             formData.append('xtokenlogin', document.getElementById('xtokenlogin').value);
                             try {
-                                const response = await fetch("./modules/isud.php", {
+                                const response = await fetch("./common/modules/isud.php", {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/x-www-form-urlencoded'
@@ -257,7 +258,7 @@ xgeneratecsrftoken();
                             formData.append('xdeletepersonusername', document.getElementById("xdeletepersonusername").value);
                             formData.append('xdeletepersonpassword', document.getElementById("xdeletepersonpassword").value);
                             try {
-                                const response = await fetch("./modules/isud.php", {
+                                const response = await fetch("./common/modules/isud.php", {
                                     method: 'POST',
                                     body: formData
                                 });
