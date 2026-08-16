@@ -29,19 +29,48 @@ function xgeneratecsrftoken() {
     }
 }
 
+function xconfig_key_value($xconfig_key_value) {
+    $xneedle = 'config_key_value.php';
+    $xloaded = false;
+    foreach (get_included_files() as $xfile) {
+        if (basename($xfile) === $xneedle) {
+            $xloaded = true;
+            break;
+        }
+    }
+    if (!$xloaded) {
+        $xdir = __DIR__;
+        while ($xdir !== dirname($xdir)) {
+            $config_key_value = $xdir . DIRECTORY_SEPARATOR . $xneedle;
+            if (is_file($config_key_value)) {
+                require_once $config_key_value;
+            }
+            $xdir = dirname($xdir);
+        }
+    }
+    $xconfig_key_value = $xconfig_key_value();
+    return $xconfig_key_value;
+}
+
+function xservercheck() {
+    #When you connect locally with your phone : (strtolower($_SERVER['HTTP_HOST']) === 'localhost' || strtolower($_SERVER['HTTP_HOST']) === '192.168.x.x')
+    if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function xauthentication() {
     if (isset($_SESSION['user-username'], $_SESSION['user-info']) &&
             is_array($_SESSION['user-username']) && is_array($_SESSION['user-info']) &&
             !empty($_SESSION['user-username']) && !empty($_SESSION['user-info']) &&
-            #
             isset($_SESSION['user-username'][0], $_SESSION['user-username'][1], $_SESSION['user-username'][2], $_SESSION['user-username'][3], $_SESSION['user-username'][4], $_SESSION['user-username'][5]) &&
             is_string($_SESSION['user-username'][0]) && is_int($_SESSION['user-username'][1]) && is_int($_SESSION['user-username'][2]) && is_string($_SESSION['user-username'][3]) && is_string($_SESSION['user-username'][4]) && is_string($_SESSION['user-username'][5]) &&
             !empty($_SESSION['user-username'][0]) && !empty($_SESSION['user-username'][1]) && !empty($_SESSION['user-username'][2]) && !empty($_SESSION['user-username'][3]) && !empty($_SESSION['user-username'][4]) && !empty($_SESSION['user-username'][5]) &&
-            #
             isset($_SESSION['user-info'][0], $_SESSION['user-info'][1], $_SESSION['user-info'][2], $_SESSION['user-info'][3]) &&
             is_string($_SESSION['user-info'][0]) && is_string($_SESSION['user-info'][1]) && is_int($_SESSION['user-info'][2]) && is_string($_SESSION['user-info'][3]) &&
             !empty($_SESSION['user-info'][0]) && !empty($_SESSION['user-info'][1]) && !empty($_SESSION['user-info'][2]) && !empty($_SESSION['user-info'][3]) &&
-            #
             hash_equals($_SESSION['user-username'][3], $_SESSION['user-info'][3]) &&
             hash_equals($_SESSION['user-username'][4], session_id()) &&
             ($_SESSION['user-info'][1] === $_SERVER['HTTP_USER_AGENT']) &&
@@ -55,37 +84,27 @@ function xauthentication() {
 
 class Connection {
 
-    public $key1 = "", $key2 = "";
-
-    private function xloadEnv() {
-        #Keep it (.env) outside the public directory 😂
-        foreach (file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $xline) {
-            putenv($xline);
-        }
-    }
-
-    public function __construct() {
-
-        $this->xloadEnv();
-        $this->key1 = getenv('key1');
-        $this->key2 = getenv('key2');
-    }
+    private static $xconn = null;
 
     public function xconnection() {
-
         try {
-
-            $xconnection = new PDO("mysql:host=" . getenv('servername') . ";dbname=" . getenv('databasename') . ";charset=" . getenv('charset') . ";", getenv('username'), getenv('password'));
-            $xconnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $xconnection;
+            if (self::$xconn !== null) {
+                return self::$xconn;
+            }
+            $xconnection_kv = xconfig_key_value($xconfig_key_value = 'xconnection_kv');
+            if (!isset($xconnection_kv)) {
+                die('Database connection failed !');
+            }
+            self::$xconn = new PDO(
+                    "mysql:host={$xconnection_kv['servername']};dbname={$xconnection_kv['databasename']};charset={$xconnection_kv['charset']}",
+                    $xconnection_kv['username'], $xconnection_kv['password']
+            );
+            self::$xconn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return self::$xconn;
         } catch (PDOException $e) {
-
-            die("An error occurred, please try again later !");
+            die('An error occurred, please try again later !');
         } finally {
-
-            unset($xconnection);
+            $xconnection_kv = [];
         }
     }
 }
-
-?>
