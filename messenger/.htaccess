@@ -3,6 +3,6 @@ Options -Indexes
 
 DirectoryIndex index.php
 
-<FilesMatch "(\.htaccess|config\.php|\.env)">
+<FilesMatch "(\.htaccess|config\.php|config_key_value\.php)">
     Require all denied
 </FilesMatch>
