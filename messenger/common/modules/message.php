@@ -1,9 +1,9 @@
 <?php
 
-require_once '../config.php';
+require_once '../../config.php';
 require_once '../src/script2.php';
 
-use root\src\script2\Functions;
+use root\common\src\script2\Functions;
 
 if (xauthentication()) {
 
@@ -88,9 +88,11 @@ if (xauthentication()) {
         public function __construct() {
 
             $xconnection = new Connection();
-            $this->key1 = $xconnection->key1;
-            $this->key2 = $xconnection->key2;
             $this->xconnection = $xconnection->xconnection();
+
+            $xkey_kv = xconfig_key_value($xconfig_key_value = 'xkey_kv');
+            $this->key1 = $xkey_kv['key1'];
+            $this->key2 = $xkey_kv['key2'];
 
             $xfunction = new Functions();
             $this->xaccountimage = $xfunction;
@@ -125,9 +127,9 @@ if (xauthentication()) {
                             $xmessagesubmitmessage = $_POST['xmessagesubmitmessage'];
                         }
 
-                        $xmepath = '../' . $_SESSION['user-username'][0];
+                        $xmepath = '../../' . $_SESSION['user-username'][0];
                         $xmefilespath = '';
-                        $xreceiverpath = '../' . $_POST['xreceiversubmitmessage'];
+                        $xreceiverpath = '../../' . $_POST['xreceiversubmitmessage'];
                         $xreceiverfilespath = '';
                         $xalert = 0;
 
@@ -167,35 +169,35 @@ if (xauthentication()) {
                                         foreach ($_FILES['xuploadfiles']['tmp_name'] as $xkeys => $xtmpname) {
                                             $xfilemime = mime_content_type($xtmpname);
                                             $xfileext = strtolower(pathinfo($_FILES['xuploadfiles']['name'][$xkeys], PATHINFO_EXTENSION));
-                                            $xfilename = str_replace('.', '', $xmepath) . '-' . substr(str_shuffle('kF4dXHVenfSaq5KAyZcuBmUY1PT78pGtLl0sirhCJEMNjwQWDx9zOIR2o3bv6g'), 0, 32) . '.' . $xfileext;
+                                            $xfilename = str_replace('../..', '', $xmepath) . '-' . substr(str_shuffle('kF4dXHVenfSaq5KAyZcuBmUY1PT78pGtLl0sirhCJEMNjwQWDx9zOIR2o3bv6g'), 0, 32) . '.' . $xfileext;
                                             if (in_array($xfilemime, ['image/gif', 'image/jpeg', 'image/png', 'image/webp']) && in_array($xfileext, ['gif', 'jpeg', 'jpg', 'png', 'webp'])) {
                                                 if (move_uploaded_file($xtmpname, $xmepath . '/images' . $xfilename)) {
                                                     if ($xmepath !== $xreceiverpath) {
-                                                        $xmefilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . substr($xmepath, 1) . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . substr($xmepath, 1) . '/images' . $xfilename . '" target="_blank">' . substr($xmepath, 1) . '/images' . $xfilename . '</a></div>';
+                                                        $xmefilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . substr($xmepath, 4) . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . substr($xmepath, 4) . '/images' . $xfilename . '" target="_blank">' . substr($xmepath, 4) . '/images' . $xfilename . '</a></div>';
                                                         if (copy($xmepath . '/images' . $xfilename, $xreceiverpath . '/images' . $xfilename))
-                                                            $xreceiverfilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . substr($xreceiverpath, 1) . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . substr($xreceiverpath, 1) . '/images' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 1) . '/images' . $xfilename . '</a></div>';
+                                                            $xreceiverfilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . substr($xreceiverpath, 4) . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . substr($xreceiverpath, 4) . '/images' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 4) . '/images' . $xfilename . '</a></div>';
                                                     } else {
-                                                        $xreceiverfilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . substr($xreceiverpath, 1) . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . substr($xreceiverpath, 1) . '/images' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 1) . '/images' . $xfilename . '</a></div>';
+                                                        $xreceiverfilespath .= '<br><div class="xdmsgi"><img class="ximsgi" src="' . substr($xreceiverpath, 4) . '/images' . $xfilename . '"><br><a class="xamsgi" href="' . substr($xreceiverpath, 4) . '/images' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 4) . '/images' . $xfilename . '</a></div>';
                                                     }
                                                 }
                                             } else if (in_array($xfilemime, ['audio/mpeg', 'audio/ogg', 'audio/wav', 'audio/webm']) && in_array($xfileext, ['mp3', 'ogg', 'wav', 'webm'])) {
                                                 if (move_uploaded_file($xtmpname, $xmepath . '/audios' . $xfilename)) {
                                                     if ($xmepath !== $xreceiverpath) {
-                                                        $xmefilespath .= '<br><a class="xamsga" href="' . substr($xmepath, 1) . '/audios' . $xfilename . '" target="_blank">' . substr($xmepath, 1) . '/audios' . $xfilename . '</a>';
+                                                        $xmefilespath .= '<br><a class="xamsga" href="' . substr($xmepath, 4) . '/audios' . $xfilename . '" target="_blank">' . substr($xmepath, 4) . '/audios' . $xfilename . '</a>';
                                                         if (copy($xmepath . '/audios' . $xfilename, $xreceiverpath . '/audios' . $xfilename))
-                                                            $xreceiverfilespath .= '<br><a class="xamsga" href="' . substr($xreceiverpath, 1) . '/audios' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 1) . '/audios' . $xfilename . '</a>';
+                                                            $xreceiverfilespath .= '<br><a class="xamsga" href="' . substr($xreceiverpath, 4) . '/audios' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 4) . '/audios' . $xfilename . '</a>';
                                                     } else {
-                                                        $xreceiverfilespath .= '<br><a class="xamsga" href="' . substr($xreceiverpath, 1) . '/audios' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 1) . '/audios' . $xfilename . '</a>';
+                                                        $xreceiverfilespath .= '<br><a class="xamsga" href="' . substr($xreceiverpath, 4) . '/audios' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 4) . '/audios' . $xfilename . '</a>';
                                                     }
                                                 }
                                             } else if (in_array($xfilemime, ['video/mp4', 'video/ogg', 'video/webm']) && in_array($xfileext, ['mp4', 'ogv', 'webm'])) {
                                                 if (move_uploaded_file($xtmpname, $xmepath . '/videos' . $xfilename)) {
                                                     if ($xmepath !== $xreceiverpath) {
-                                                        $xmefilespath .= '<br><a class="xamsgv" href="' . substr($xmepath, 1) . '/videos' . $xfilename . '" target="_blank">' . substr($xmepath, 1) . '/videos' . $xfilename . '</a>';
+                                                        $xmefilespath .= '<br><a class="xamsgv" href="' . substr($xmepath, 4) . '/videos' . $xfilename . '" target="_blank">' . substr($xmepath, 4) . '/videos' . $xfilename . '</a>';
                                                         if (copy($xmepath . '/videos' . $xfilename, $xreceiverpath . '/videos' . $xfilename))
-                                                            $xreceiverfilespath .= '<br><a class="xamsgv" href="' . substr($xreceiverpath, 1) . '/videos' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 1) . '/videos' . $xfilename . '</a>';
+                                                            $xreceiverfilespath .= '<br><a class="xamsgv" href="' . substr($xreceiverpath, 4) . '/videos' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 4) . '/videos' . $xfilename . '</a>';
                                                     } else {
-                                                        $xreceiverfilespath .= '<br><a class="xamsgv" href="' . substr($xreceiverpath, 1) . '/videos' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 1) . '/videos' . $xfilename . '</a>';
+                                                        $xreceiverfilespath .= '<br><a class="xamsgv" href="' . substr($xreceiverpath, 4) . '/videos' . $xfilename . '" target="_blank">' . substr($xreceiverpath, 4) . '/videos' . $xfilename . '</a>';
                                                     }
                                                 }
                                             }
@@ -456,10 +458,10 @@ if (xauthentication()) {
                                         $xtick = '✓ ';
                                     }
 
-                                    $xaccountimage = $this->xaccountimage->xaccountimage('../' . $xusername);
+                                    $xaccountimage = $this->xaccountimage->xaccountimage('../../' . $xusername);
                                     if (explode(' ', $xdate)[0] === explode(' ', $xdatetime)[0]) {
                                         $xmessagedisplay .= '<div class="xbfm" datavalue="' . $xusername . '">'
-                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 1) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
+                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 4) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
                                                 . '<div class="xbfmd">' . $xusername . '</div>'
                                                 . '<div class="xellipsis">' . $xmessage . '</div>'
                                                 . '<div class="xbfmd xbfmt">' . $xtick . explode(' ', $xdate)[1] . '</div>'
@@ -468,7 +470,7 @@ if (xauthentication()) {
                                                 . '</div>';
                                     } else {
                                         $xmessagedisplay .= '<div class="xbfm" datavalue="' . $xusername . '">'
-                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 1) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
+                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 4) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xstatus . '"></div></div></div>'
                                                 . '<div class="xbfmd">' . $xusername . '</div>'
                                                 . '<div class="xellipsis">' . $xmessage . '</div>'
                                                 . '<div class="xbfmd xbfmt">' . $xtick . $xdate . '</div>'
@@ -566,7 +568,7 @@ if (xauthentication()) {
                                                         $xtick = '✓ ';
                                                     }
 
-                                                    $xaccountimage = $this->xaccountimage->xaccountimage('../' . $xusername);
+                                                    $xaccountimage = $this->xaccountimage->xaccountimage('../../' . $xusername);
                                                     if ($xusername === $_SESSION['user-username'][0]) {
 
                                                         if (explode(' ', $xdate)[0] === explode(' ', $xdatetime)[0]) {
@@ -587,7 +589,7 @@ if (xauthentication()) {
                                                         }
 
                                                         $xmessagedisplay .= '<div class="xbfmm ' . $xsbr . '" id="xm' . str_replace(['-', ' ', ':'], '', $xdate2) . '" datavalue="' . $xdate2 . '">'
-                                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 1) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xmestatus . '"></div></div></div>'
+                                                                . '<div class="xbfmd"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 4) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xmestatus . '"></div></div></div>'
                                                                 . '<div class="xbfmd">' . $xusername . ' :</div>'
                                                                 . '<div class="xbfmcm">' . $xmessage . '</div>'
                                                                 . '<div class="xbfmdm xfz">' . $xtick . $xdate . '</div>'
@@ -612,7 +614,7 @@ if (xauthentication()) {
                                                         }
 
                                                         $xmessagedisplay .= '<div class="xbfmr ' . $xsbr . '">'
-                                                                . '<div class="xbfmdr"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 1) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xreceiverstatus . '"></div></div></div>'
+                                                                . '<div class="xbfmdr"><div class="xbfma"><img class="xbfmimg" src="' . substr($xaccountimage, 4) . '?t=' . filemtime($xaccountimage) . '"><div class="xbfms ' . $xreceiverstatus . '"></div></div></div>'
                                                                 . '<div class="xbfmdr">' . $xusername . ' :</div>'
                                                                 . '<div class="xbfmcr">' . $xmessage . '</div>'
                                                                 . '<div class="xbfmd xfz">' . $xtick . $xdate . '</div>'
@@ -717,8 +719,8 @@ if (xauthentication()) {
                                             $xopenflag = strpos($xdelfiles, 'href="') + 6;
                                             $xcloseflag = strpos($xdelfiles, '" target', $xopenflag);
                                             $xsubstring = substr($xdelfiles, $xopenflag, $xcloseflag - $xopenflag);
-                                            if (file_exists($xsubstring)) {
-                                                unlink($xsubstring);
+                                            if (file_exists('../.' . $xsubstring)) {
+                                                unlink('../.' . $xsubstring);
                                             }
                                             $xdelfiles = explode($xsubstring . '</a>', $xdelfiles)[1];
                                         }
@@ -760,8 +762,8 @@ if (xauthentication()) {
                                                                         $xopenflag = strpos($xdelfiles, 'href="') + 6;
                                                                         $xcloseflag = strpos($xdelfiles, '" target', $xopenflag);
                                                                         $xsubstring = substr($xdelfiles, $xopenflag, $xcloseflag - $xopenflag);
-                                                                        if (file_exists($xsubstring)) {
-                                                                            unlink($xsubstring);
+                                                                        if (file_exists('../.' . $xsubstring)) {
+                                                                            unlink('../.' . $xsubstring);
                                                                         }
                                                                         $xdelfiles = explode($xsubstring . '</a>', $xdelfiles)[1];
                                                                     }
@@ -825,8 +827,8 @@ if (xauthentication()) {
                                     $xopenflag = strpos($xdelfiles, 'href="') + 6;
                                     $xcloseflag = strpos($xdelfiles, '" target', $xopenflag);
                                     $xsubstring = substr($xdelfiles, $xopenflag, $xcloseflag - $xopenflag);
-                                    if (file_exists($xsubstring)) {
-                                        unlink($xsubstring);
+                                    if (file_exists('../.' . $xsubstring)) {
+                                        unlink('../.' . $xsubstring);
                                     }
                                     $xdelfiles = explode($xsubstring . '</a>', $xdelfiles)[1];
                                 }
@@ -860,7 +862,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xsubmitmessages']) && !empty($_POST['xsubmitmessages']) && preg_match('/^[a-z]+$/', $_POST['xsubmitmessages']) && $_POST['xsubmitmessages'] === "xtrue") {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
             if (isset($_POST["xreceiversubmitmessage"]) && !empty($_POST['xreceiversubmitmessage']) && preg_match('/^[a-z0-9]+$/', $_POST['xreceiversubmitmessage']) && strlen($_POST["xreceiversubmitmessage"]) <= 32) {
                 if ((isset($_POST["xmessagesubmitmessage"]) && !empty($_POST['xmessagesubmitmessage']) && preg_match('/^[a-zA-Z0-9!;:?.,\s\p{Emoji_Presentation}_-]*$/u', $_POST['xmessagesubmitmessage']) && strlen($_POST['xmessagesubmitmessage']) <= 1000) || (isset($_FILES['xuploadfiles']) && isset($_FILES['xuploadfiles']['tmp_name']) && is_array($_FILES['xuploadfiles']['tmp_name']) && count(array_filter($_FILES['xuploadfiles']['tmp_name'], 'is_uploaded_file')) === count($_FILES['xuploadfiles']['tmp_name']))) {
 
@@ -879,7 +881,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xreceivemessages']) && !empty($_POST['xreceivemessages']) && preg_match('/^[a-z]+$/', $_POST['xreceivemessages']) && $_POST['xreceivemessages'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
 
             $xmessage = new Message();
             $xmessage->xreceivemessages();
@@ -888,7 +890,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xreceivemessage']) && !empty($_POST['xreceivemessage']) && preg_match('/^[a-z]+$/', $_POST['xreceivemessage']) && $_POST['xreceivemessage'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
             if (isset($_POST["xuserreceivemessage"]) && !empty($_POST['xuserreceivemessage']) && preg_match('/^[a-z0-9]+$/', $_POST['xuserreceivemessage']) && strlen($_POST["xuserreceivemessage"]) <= 32) {
 
                 $xmessage = new Message();
@@ -899,7 +901,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xdelmsg']) && !empty($_POST['xdelmsg']) && preg_match('/^[a-z]+$/', $_POST['xdelmsg']) && $_POST['xdelmsg'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
             if (isset($_POST["xdelmsgdate"]) && !empty($_POST['xdelmsgdate']) && preg_match('/^[0-9: -]+$/', $_POST['xdelmsgdate']) && strlen($_POST["xdelmsgdate"]) <= 19) {
 
                 $xmessage = new Message();
@@ -910,7 +912,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xdelmsgs']) && !empty($_POST['xdelmsgs']) && preg_match('/^[a-z]+$/', $_POST['xdelmsgs']) && $_POST['xdelmsgs'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
             if (isset($_POST["xdelmsgsusername"]) && !empty($_POST['xdelmsgsusername']) && preg_match('/^[a-z0-9]+$/', $_POST['xdelmsgsusername']) && strlen($_POST["xdelmsgsusername"]) <= 32) {
 
                 $xmessage = new Message();
@@ -921,7 +923,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xblockuser']) && !empty($_POST['xblockuser']) && preg_match('/^[a-z]+$/', $_POST['xblockuser']) && $_POST['xblockuser'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
             if (isset($_POST["xblockuserusername"]) && !empty($_POST['xblockuserusername']) && preg_match('/^[a-z0-9]+$/', $_POST['xblockuserusername']) && strlen($_POST["xblockuserusername"]) <= 32 && $_POST['xblockuserusername'] !== $_SESSION['user-username'][0]) {
 
                 $xmessage = new Message();
@@ -931,4 +933,3 @@ if (xauthentication()) {
         }
     }
 }
-?>
