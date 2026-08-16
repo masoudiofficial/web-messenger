@@ -1,6 +1,6 @@
 <?php
 
-require_once '../config.php';
+require_once '../../config.php';
 
 class Isud {
 
@@ -57,9 +57,9 @@ class Isud {
 
                     $xfolder = $_POST["xaddpersonusername"];
                     $xsubfolders = ['images', 'audios', 'videos'];
-                    if (!is_dir("../$xfolder") && mkdir("../$xfolder", 0755, true) && copy("../assets/accountimage.png", "../$xfolder/accountimage.png")) {
+                    if (!is_dir("../../$xfolder") && mkdir("../../$xfolder", 0755, true) && copy("../assets/accountimage.png", "../../$xfolder/accountimage.png")) {
                         foreach ($xsubfolders as $xsf) {
-                            mkdir("../$xfolder" . DIRECTORY_SEPARATOR . $xsf, 0755, true);
+                            mkdir("../../$xfolder" . DIRECTORY_SEPARATOR . $xsf, 0755, true);
                         }
                         echo json_encode(array("xmessage" => "User added !", "xtype" => "#239f40"));
                     } else {
@@ -105,7 +105,7 @@ class Isud {
 
                     session_regenerate_id(true);
                     $xsecuritytoken = bin2hex(random_bytes(64));
-                    $_SESSION['user-username'] = array($_POST['xloginusername'], 1, time(), $xsecuritytoken, session_id(), $xselect1_r['username2']);
+                    $_SESSION['user-username'] = array($_POST['xloginusername'], 1, time(), $xsecuritytoken, session_id(), $xselect1_r['username2'], 'reques_referrer');
                     $_SESSION['user-info'] = array($_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], time(), $xsecuritytoken);
 
                     echo json_encode(array("xmessage" => "Login !", "xtype" => "#239f40"));
@@ -140,7 +140,7 @@ class Isud {
 
                     $this->xconnection->commit();
 
-                    if ($this->xremovedirectory('../' . $_POST["xdeletepersonusername"])) {
+                    if ($this->xremovedirectory('../../' . $_POST["xdeletepersonusername"])) {
                         echo json_encode(array("xmessage" => "User deleted !", "xtype" => "#239f40"));
                     } else {
                         echo json_encode(array("xmessage" => "Unfortunately, there is a problem !", "xtype" => "#ffa500"));
@@ -164,9 +164,8 @@ class Isud {
 }
 
 if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/^[a-z]+$/", $_POST["xaddperson"]) && $_POST["xaddperson"] === "xtrue" && empty($_FILES)) {
-    #if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' && strtolower($_SERVER['HTTP_HOST']) === 'example.com' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
-    if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER["REQUEST_METHOD"] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {#When you connect locally with your phone : (strtolower($_SERVER['HTTP_HOST']) === 'localhost' || strtolower($_SERVER['HTTP_HOST']) === '192.168.x.x')
-        $xnotallowed = ['assets', 'modules', 'src'];
+    if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
+        $xnotallowed = ['common'];
         if (isset($_POST["xaddpersonusername"]) && !empty($_POST["xaddpersonusername"]) && preg_match("/^[a-z0-9]+$/", $_POST["xaddpersonusername"]) && strlen($_POST["xaddpersonusername"]) <= 32 && !in_array($_POST['xaddpersonusername'], $xnotallowed, true)) {
 
             $xisud = new Isud();
@@ -181,7 +180,7 @@ if (isset($_POST["xaddperson"]) && !empty($_POST["xaddperson"]) && preg_match("/
 }
 
 if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_match('/^[a-z]+$/', $_POST['xloginbutton']) && $_POST['xloginbutton'] === "xtrue" && empty($_FILES)) {
-    if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+    if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
         if (isset($_POST['xloginusername']) && !empty($_POST['xloginusername']) && preg_match('/^[a-z0-9]+$/', $_POST['xloginusername']) && strlen($_POST["xloginusername"]) <= 32) {
 
             $xisud = new Isud();
@@ -196,8 +195,8 @@ if (isset($_POST['xloginbutton']) && !empty($_POST['xloginbutton']) && preg_matc
 }
 
 if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_match("/^[a-z]+$/", $_POST["xdeleteperson"]) && $_POST["xdeleteperson"] === "xtrue" && empty($_FILES)) {
-    if (strtolower($_SERVER["HTTP_HOST"]) === "localhost" && $_SERVER["REQUEST_METHOD"] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
-        $xnotallowed = ['assets', 'modules', 'src'];
+    if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
+        $xnotallowed = ['common'];
         if (isset($_POST["xdeletepersonusername"]) && !empty($_POST["xdeletepersonusername"]) && preg_match("/^[a-z0-9]+$/", $_POST["xdeletepersonusername"]) && strlen($_POST["xdeletepersonusername"]) <= 32 && !in_array($_POST['xdeletepersonusername'], $xnotallowed, true)) {
 
             $xisud = new Isud();
@@ -210,4 +209,3 @@ if (isset($_POST["xdeleteperson"]) && !empty($_POST["xdeleteperson"]) && preg_ma
         echo json_encode(array("xmessage" => "Not possible !", "xtype" => "#ffa500"));
     }
 }
-?>
