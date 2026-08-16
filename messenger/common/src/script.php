@@ -1,9 +1,9 @@
 <?php
 
-require_once '../config.php';
+require_once '../../config.php';
 require_once './script2.php';
 
-use root\src\script2\Functions;
+use root\common\src\script2\Functions;
 
 if (xauthentication()) {
 
@@ -36,14 +36,14 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xcirclegraph']) && !empty($_POST['xcirclegraph']) && preg_match('/^[a-z]+$/', $_POST['xcirclegraph']) && $_POST['xcirclegraph'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
 
             $xfunction = new Functions();
 
             $xtotalspace = 104857600;
-            $xaudiosize = xcontentsize('../' . $_SESSION['user-username'][0], ['mp3', 'ogg', 'wav', 'webm']);
-            $ximagesize = xcontentsize('../' . $_SESSION['user-username'][0], ['gif', 'jpeg', 'jpg', 'png', 'webp']);
-            $xvideosize = xcontentsize('../' . $_SESSION['user-username'][0], ['mp4', 'ogv', 'webm']);
+            $xaudiosize = xcontentsize('../../' . $_SESSION['user-username'][0], ['mp3', 'ogg', 'wav', 'webm']);
+            $ximagesize = xcontentsize('../../' . $_SESSION['user-username'][0], ['gif', 'jpeg', 'jpg', 'png', 'webp']);
+            $xvideosize = xcontentsize('../../' . $_SESSION['user-username'][0], ['mp4', 'ogv', 'webm']);
             $xusedspace = $xaudiosize + $ximagesize + $xvideosize;
             $xfreespace = $xtotalspace - $xusedspace;
 
@@ -52,14 +52,14 @@ if (xauthentication()) {
             $xvideoangle = 360 * ($xvideosize / $xtotalspace);
             $xfreeangle = 360 * ($xfreespace / $xtotalspace);
 
-            $xaccountimage = $xfunction->xaccountimage('../' . $_SESSION['user-username'][0]);
+            $xaccountimage = $xfunction->xaccountimage('../../' . $_SESSION['user-username'][0]);
 
-            echo json_encode(array("xaudioangle" => $xaudioangle, "xaudiosize" => formatBytes($xaudiosize), "ximageangle" => $ximageangle, "ximagesize" => formatBytes($ximagesize), "xvideoangle" => $xvideoangle, "xvideosize" => formatBytes($xvideosize), "xfreeangle" => $xfreeangle, "xfreespace" => formatBytes($xfreespace), "xaccountimage" => substr($xaccountimage, 1) . "?t=" . filemtime($xaccountimage)));
+            echo json_encode(array("xaudioangle" => $xaudioangle, "xaudiosize" => formatBytes($xaudiosize), "ximageangle" => $ximageangle, "ximagesize" => formatBytes($ximagesize), "xvideoangle" => $xvideoangle, "xvideosize" => formatBytes($xvideosize), "xfreeangle" => $xfreeangle, "xfreespace" => formatBytes($xfreespace), "xaccountimage" => substr($xaccountimage, 4) . "?t=" . filemtime($xaccountimage)));
         }
     }
 
     if (isset($_POST['xuploadimage']) && !empty($_POST["xuploadimage"]) && preg_match("/^[a-z]+$/", $_POST["xuploadimage"]) && $_POST["xuploadimage"] === "xtrue") {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
             if (isset($_FILES['ximagetoupload']) && isset($_FILES['ximagetoupload']['tmp_name']) && is_uploaded_file($_FILES['ximagetoupload']['tmp_name']) && $_FILES['ximagetoupload']['size'] < 10485760) {
 
                 try {
@@ -69,15 +69,15 @@ if (xauthentication()) {
 
                     $xfunction = new Functions();
 
-                    if (104857600 - (xcontentsize('../' . $_SESSION['user-username'][0], ['gif', 'jpeg', 'jpg', 'mp3', 'mp4', 'ogg', 'ogv', 'png', 'wav', 'webm', 'webp']) + xdatasize($xconnection, $_SESSION['user-username'][0])) > $_FILES['ximagetoupload']['size']) {
+                    if (104857600 - (xcontentsize('../../' . $_SESSION['user-username'][0], ['gif', 'jpeg', 'jpg', 'mp3', 'mp4', 'ogg', 'ogv', 'png', 'wav', 'webm', 'webp']) + xdatasize($xconnection, $_SESSION['user-username'][0])) > $_FILES['ximagetoupload']['size']) {
 
                         $ximgmime = mime_content_type($_FILES['ximagetoupload']['tmp_name']);
                         $ximgext = strtolower(pathinfo($_FILES['ximagetoupload']['name'], PATHINFO_EXTENSION));
 
                         if (in_array($ximgmime, ['image/gif', 'image/jpeg', 'image/png', 'image/webp']) && in_array($ximgext, ['gif', 'jpeg', 'jpg', 'png', 'webp'])) {
 
-                            $xoldimg = $xfunction->xaccountimage('../' . $_SESSION['user-username'][0]);
-                            $xnewimg = '../' . $_SESSION['user-username'][0] . "/accountimage.$ximgext";
+                            $xoldimg = $xfunction->xaccountimage('../../' . $_SESSION['user-username'][0]);
+                            $xnewimg = '../../' . $_SESSION['user-username'][0] . "/accountimage.$ximgext";
                             if (unlink($xoldimg) && move_uploaded_file($_FILES['ximagetoupload']['tmp_name'], $xnewimg)) {
                                 echo json_encode(array("xmessage" => "$xnewimg?t=" . filemtime($xnewimg), "xtype" => "#239f40"));
                             } else {
@@ -103,7 +103,7 @@ if (xauthentication()) {
     }
 
     if (isset($_POST['xlogout']) && !empty($_POST['xlogout']) && preg_match('/^[a-z]+$/', $_POST['xlogout']) && $_POST['xlogout'] === "xtrue" && empty($_FILES)) {
-        if (strtolower($_SERVER['HTTP_HOST']) === 'localhost' && $_SERVER['REQUEST_METHOD'] === 'POST' && $_SESSION['xrequestreferrer'] === 'index.php') {
+        if (xservercheck() && $_SESSION['user-username'][6] === 'index.php') {
 
             $_SESSION = [];
             session_destroy();
@@ -111,4 +111,3 @@ if (xauthentication()) {
         }
     }
 }
-?>
