@@ -71,7 +71,7 @@ async function ximagetoupload(xselectfile) {
         formData.append('xuploadimage', 'xtrue');
         formData.append('ximagetoupload', xfile);
         try {
-            const response = await fetch("./src/script.php", {
+            const response = await fetch("./common/src/script.php", {
                 method: 'POST',
                 body: formData
             });
@@ -102,7 +102,7 @@ async function xcirclegraph() {
     const formData = new FormData();
     formData.append('xcirclegraph', 'xtrue');
     try {
-        const response = await fetch("./src/script.php", {
+        const response = await fetch("./common/src/script.php", {
             method: 'POST',
             body: formData
         });
@@ -218,7 +218,7 @@ async function xsubmitmessage() {
         if (xmessage !== '' || xfiles.length !== 0) {
             if (document.getElementById('xmessage').value.length <= 1000) {
                 try {
-                    const response = await fetch("./modules/message.php", {
+                    const response = await fetch("./common/modules/message.php", {
                         method: 'POST',
                         body: formData
                     });
@@ -283,7 +283,7 @@ async function xreceivemessages() {
     const formData = new FormData();
     formData.append('xreceivemessages', 'xtrue');
     try {
-        const response = await fetch("./modules/message.php", {
+        const response = await fetch("./common/modules/message.php", {
             method: 'POST',
             body: formData
         });
@@ -361,7 +361,7 @@ async function xreceivemessage() {
     formData.append('xreceivemessage', 'xtrue');
     formData.append('xuserreceivemessage', document.getElementById('xreceiver').value);
     try {
-        const response = await fetch("./modules/message.php", {
+        const response = await fetch("./common/modules/message.php", {
             method: 'POST',
             body: formData
         });
@@ -446,7 +446,7 @@ async function xdelmsg() {
     formData.append('xdelmsg', 'xtrue');
     formData.append('xdelmsgdate', document.getElementById('xdelmsgdate').value);
     try {
-        const response = await fetch("./modules/message.php", {
+        const response = await fetch("./common/modules/message.php", {
             method: 'POST',
             body: formData
         });
@@ -468,7 +468,7 @@ async function xdelmsgs() {
     formData.append('xdelmsgs', 'xtrue');
     formData.append('xdelmsgsusername', document.getElementById('xreceiver').value);
     try {
-        const response = await fetch("./modules/message.php", {
+        const response = await fetch("./common/modules/message.php", {
             method: 'POST',
             body: formData
         });
@@ -490,7 +490,7 @@ async function xblockuser() {
     formData.append('xblockuser', 'xtrue');
     formData.append('xblockuserusername', document.getElementById('xreceiver').value);
     try {
-        const response = await fetch("./modules/message.php", {
+        const response = await fetch("./common/modules/message.php", {
             method: 'POST',
             body: formData
         });
@@ -511,7 +511,7 @@ async function xlogout() {
     const form = new FormData();
     form.append('xlogout', 'xtrue');
     try {
-        const response = await fetch("./src/script.php", {
+        const response = await fetch("./common/src/script.php", {
             method: 'POST',
             body: form
         });
